@@ -1,0 +1,13 @@
+.iconos {
+  display: inline-block;
+  position: relative;
+  top: -1rem;
+  margin-left: 0.5rem;
+}
+.tablaUsuarios {
+  background: rgba(111, 162, 114, 0.534);
+}
+#tablaUsuarios {
+  margin-top: 2rem;
+  background: rgba(143, 115, 49, 0.253);
+}
