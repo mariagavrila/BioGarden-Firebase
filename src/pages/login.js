@@ -1,19 +1,16 @@
-//mirar eror cuando pongo contraseña incorrecta
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Container from "@material-ui/core/Container";
+import LinearProgress from "@material-ui/core/LinearProgress";
 //Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useHistory, Redirect } from "react-router-dom";
 import { loginUser } from "../redux/actions/userActions";
-import { SET_AUTHENTICATED } from "../redux/types";
+import { SET_AUTHENTICATED, CLEAR_ERRORS } from "../redux/types";
 
 import "./styles/login.css";
 
@@ -54,16 +51,8 @@ const boldText = {
   fontWeight: "900 ",
   color: "green",
 };
-const centerItem = {
-  display: "block",
-  marginLeft: "auto",
-  marginRight: "auto",
-  textAlign: "center",
-};
 
 export default function Login(props) {
-  let history = useHistory();
-
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -76,65 +65,54 @@ export default function Login(props) {
   });
   let { email, password, emailError, passwordError } = state;
 
-  // let emailInput = document.getElementById("email");
-  // let passwordInput = document.getElementById("password");
+  console.log(state);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       dispatch({ type: SET_AUTHENTICATED });
     }
-  }, []);
+  });
 
   const validateEmail = () => {
-    console.log(email);
     if (!email) {
-      console.log("true");
-      emailError = "¡Introzca el email!";
-    } else if (!validator.validate(email)) {
-      emailError = "¡Email incorrecto!";
-    }
-    if (emailError != "") {
       setState({
         ...state,
-        emailError,
+        emailError: "¡Introzca el email!",
       });
-    } else {
-      return true;
-    }
+    } else if (!validator.validate(email)) {
+      setState({
+        ...state,
+        emailError: "¡Email incorrecto!",
+      });
+    } else return true;
   };
 
   const validatePassword = () => {
     if (!password) {
-      passwordError = "¡Introzca la contraseña!";
-    } else if (password.length < 7) {
-      passwordError = "¡Contraseña incorrecta!";
-    }
-    if (passwordError != "") {
       setState({
         ...state,
-        passwordError,
+        passwordError: "¡Introzca la contraseña!",
       });
-    } else {
-      return true;
-    }
+    } else if (password.length < 6) {
+      setState({
+        ...state,
+        passwordError: "¡Contraseña incorrecta!",
+      });
+    } else return true;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateEmail() && validatePassword()) {
       dispatch(loginUser(email, password));
-      setState({
-        ...state,
-        email: "",
-        password: "",
-      });
     }
   };
 
   const handleChange = (event) => {
     if (event.target.name == "email") state.emailError = "";
     else state.passwordError = "";
+    dispatch({ type: CLEAR_ERRORS });
 
     setState({
       ...state,
@@ -143,6 +121,7 @@ export default function Login(props) {
   };
   const isLoggedIn = useSelector((state) => state.user.authenticated);
   const loginError = useSelector((state) => state.user.error);
+  const isLoading = useSelector((state) => state.user.loading);
   if (state.email != "") state.emailError = "";
   if (state.password != "") state.passwordError = "";
 
@@ -172,6 +151,7 @@ export default function Login(props) {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
               onChange={handleChange}
               onBlur={validateEmail}
             />
@@ -186,6 +166,7 @@ export default function Login(props) {
               label="Contraseña"
               type="password"
               id="password"
+              password={password}
               autoComplete="current-password"
               onChange={handleChange}
               onBlur={validatePassword}
@@ -202,6 +183,7 @@ export default function Login(props) {
             >
               Entrar
             </Button>
+            {isLoading ? <LinearProgress color="primary" /> : null}
           </form>
         </div>
       </Container>

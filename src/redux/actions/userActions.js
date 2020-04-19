@@ -7,34 +7,39 @@ import {
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
   SET_LOGOUT,
+  LOADING_USER,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
 
 export const history = createBrowserHistory();
 
-let proxy = "http://localhost:8080";
+let proxy = "https://europe-west1-biogarden.cloudfunctions.net/api";
 
 export const loginUser = (email, password) => (dispatch) => {
   let data = { email: email, password: password };
-
+  console.log("en user actions", data);
+  dispatch({ type: LOADING_USER });
   return axios
-    .post(proxy, data)
+    .post(`${proxy}/login`, data)
     .then((res) => {
-      let data = res.data;
-      if (res.data.success) {
-        localStorage.setItem("user", res.data.token);
+      let id = res.data.userId;
+      if (id) {
+        localStorage.setItem("user", id);
         history.push("/");
         dispatch({ type: SET_AUTHENTICATED });
       } else {
         dispatch({
           type: SET_UNAUTHENTICATED,
-          error: data,
+          error: res.data.error,
         });
       }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      dispatch({
+        type: SET_UNAUTHENTICATED,
+        error: "Error interno. Inténtelo más tarde!",
+      });
     });
 };
 export const logoutUser = () => (dispatch) => {
