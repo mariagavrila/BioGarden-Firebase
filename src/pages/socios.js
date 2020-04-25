@@ -113,7 +113,7 @@ export default function Socios(props) {
       dni: state.dni,
       nsocio: state.nsocio,
     }).then((users) => {
-      if (users.length == 0) {
+      if (!users) {
         document.querySelector(".noUser").textContent =
           "No hay resultados que coincidan con la busqueda";
       }

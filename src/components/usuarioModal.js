@@ -87,11 +87,7 @@ export default function SimpleModal({ type }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(validateForm());
-    console.log(validateSubmit());
     if (validateSubmit() && validateForm()) {
-      console.log("valido");
-
       await addUser({ state }).then((response) => {
         let res = response.msg;
         setError({

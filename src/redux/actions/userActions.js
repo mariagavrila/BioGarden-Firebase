@@ -18,12 +18,12 @@ let proxy = "https://europe-west1-biogarden.cloudfunctions.net/api";
 
 export const loginUser = (email, password) => (dispatch) => {
   let data = { email: email, password: password };
-  console.log("en user actions", data);
   dispatch({ type: LOADING_USER });
   return axios
     .post(`${proxy}/login`, data)
     .then((res) => {
-      let id = res.data.userId;
+      setAuthorizationHeader(res.data.token);
+      let id = res.data.token;
       if (id) {
         localStorage.setItem("user", id);
         history.push("/");
@@ -44,15 +44,16 @@ export const loginUser = (email, password) => (dispatch) => {
 };
 export const logoutUser = () => (dispatch) => {
   dispatch({ type: SET_LOGOUT });
+  delete axios.defaults.headers.common["Authorization"];
   localStorage.removeItem("user");
 };
 // Get all users
-export const getUsersData = (usersData) => {
+export const getUsersData = (data) => {
   let users = [];
-  let data = {
-    token: localStorage.getItem("user"),
-    data: usersData,
-  };
+  // let data = {
+  //   token: localStorage.getItem("user"),
+  //   data: usersData,
+  // };
   return axios
     .post(`${proxy}/users`, data)
     .then((res) => {
@@ -88,13 +89,8 @@ export const getUserData = (id) => {
 };
 // Post one user
 export const addUser = (data) => {
-  let usersData = {
-    token: localStorage.getItem("user"),
-    data: data.state,
-  };
-
   return axios
-    .post(`${proxy}/users/add`, usersData)
+    .post(`${proxy}/users`, data)
     .then((res) => {
       console.log(res);
       return {
@@ -105,9 +101,9 @@ export const addUser = (data) => {
       console.log(err);
     });
 };
-//localhost:8080/users/add
 
-//test
-const getRumanitos = () => {
-  if ("jose" != "gilipollas") return "rumanitos";
+const setAuthorizationHeader = (token) => {
+  const FBIdToken = `Bearer ${token}`;
+  localStorage.setItem("user", FBIdToken);
+  axios.defaults.headers.common["Authorization"] = FBIdToken;
 };
