@@ -12,21 +12,21 @@ import { Link } from "react-router-dom";
 
 const navStyle = {
   display: "flex",
-  justifyContent: "space-around"
+  justifyContent: "space-around",
 };
 const boldStyle = {
   fontWeight: "700",
   color: "white",
   width: "90%",
-  textAlign: "center"
+  textAlign: "center",
 };
 
 const whiteIcon = {
-  color: "white"
+  color: "white",
 };
 
 export default function NavBar(props) {
-  const isLoggedIn = useSelector(state => state.user.authenticated);
+  const isLoggedIn = useSelector((state) => state.user.authenticated);
   const dispatch = useDispatch();
 
   const logout = () => {
@@ -51,7 +51,7 @@ export default function NavBar(props) {
         </Link>
 
         <Typography style={boldStyle} variant="h5" noWrap>
-          DISPENSARIO CANNÁBICO
+          TIENDA ECOLÓGICA
         </Typography>
         <IconButton color="inherit" style={whiteIcon} onClick={logout}>
           <ExitToAppIcon fontSize="large" />

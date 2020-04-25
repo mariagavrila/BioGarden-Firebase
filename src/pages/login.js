@@ -135,10 +135,10 @@ export default function Login(props) {
         <CssBaseline />
         <div className={classes.paper}>
           <Typography component="h1" variant="h3" style={boldText}>
-            La Milla
+            BioGarden
           </Typography>
           <Typography component="h1" variant="h6">
-            Gestión de asociaciones cannábicas
+            Asociación Ecológica Vegana
           </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
