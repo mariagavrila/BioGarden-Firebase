@@ -8,6 +8,9 @@ import {
   SET_UNAUTHENTICATED,
   SET_LOGOUT,
   LOADING_USER,
+  LOADING_USERS,
+  USERS_LOADED,
+  FAIL_USERS,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
@@ -47,24 +50,20 @@ export const logoutUser = () => (dispatch) => {
   delete axios.defaults.headers.common["Authorization"];
   localStorage.removeItem("user");
 };
-// Get all users
-export const getUsersData = (data) => {
-  let users = [];
-  // let data = {
-  //   token: localStorage.getItem("user"),
-  //   data: usersData,
-  // };
+// Obtener los usuarios filtrados
+export const getUsersData = (data) => (dispatch) => {
+  dispatch({ type: LOADING_USERS });
   return axios
     .post(`${proxy}/users`, data)
     .then((res) => {
-      let data = res.data;
-      data.forEach((element) => {
-        users.push(element);
-      });
-      return users;
+      dispatch({ type: USERS_LOADED, payload: res.data });
     })
     .catch((err) => {
       console.log(err);
+      dispatch({
+        type: FAIL_USERS,
+        payload: "Error interno. Inténtelo más tarde",
+      });
     });
 };
 // Get one user

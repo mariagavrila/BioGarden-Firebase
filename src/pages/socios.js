@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
@@ -29,6 +27,7 @@ import SimpleModal from "../components/usuarioModal";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import "./styles/socios.css";
 
@@ -71,11 +70,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Socios(props) {
   let history = useHistory();
-
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const [state, setState] = useState({
-    users: [],
     nombre: "",
     apellido: "",
     dni: "",
@@ -87,14 +85,14 @@ export default function Socios(props) {
   useEffect(() => {
     getUsers();
     //hide table in firefox
-    let table = document.getElementById("filterTable");
-    if (table) {
-      if (table.rows.length == 0)
-        table.parentElement.style.visibility = "hidden";
-      else {
-        table.parentElement.style.visibility = "visible";
-      }
-    }
+    // let table = document.getElementById("filterTable");
+    // if (table) {
+    //   if (table.rows.length == 0)
+    //     table.parentElement.style.visibility = "hidden";
+    //   else {
+    //     table.parentElement.style.visibility = "visible";
+    //   }
+    // }
   }, []);
 
   function handleChange(e) {
@@ -104,25 +102,21 @@ export default function Socios(props) {
     });
   }
 
-  const getUsers = async (e) => {
+  const getUsers = (e) => {
     if (e) e.preventDefault();
-    document.querySelector(".noUser").textContent = "";
-    await getUsersData({
-      nombre: state.nombre,
-      apellido: state.apellido,
-      dni: state.dni,
-      nsocio: state.nsocio,
-    }).then((users) => {
-      if (!users) {
-        document.querySelector(".noUser").textContent =
-          "No hay resultados que coincidan con la busqueda";
-      }
-      setState({
-        ...state,
-        users,
-      });
-    });
+    dispatch(
+      getUsersData({
+        nombre: state.nombre,
+        apellido: state.apellido,
+        dni: state.dni,
+        nsocio: state.nsocio,
+      })
+    );
   };
+  const isLoading = useSelector((state) => state.user.loadingUsers);
+  const users = useSelector((state) => state.user.users);
+  const alert = useSelector((state) => state.user.error);
+  if (users) console.log(users.length);
   const editSocio = (id) => {
     console.log(id);
   };
@@ -160,6 +154,8 @@ export default function Socios(props) {
       </form>
       <SimpleModal type="add" />
       <SimpleModal type="edit" />
+      {isLoading ? <LinearProgress color="primary" /> : null}
+
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
@@ -185,10 +181,6 @@ export default function Socios(props) {
               <Grid item xs={2}>
                 <CloseIcon style={{ color: "red" }} fontSize="large" />
                 <p className="iconos"> Socio desactivado</p>
-              </Grid>
-              <Grid item xs={3}>
-                <PaymentIcon color="primary" fontSize="large" />
-                <p className="iconos">Sin tarjeta RFID</p>
               </Grid>
             </Grid>
           </Paper>
@@ -223,90 +215,102 @@ export default function Socios(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? state.users.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
-              : state.users
-            ).map((row) => (
-              <TableRow key={row.nsocio}>
-                <TableCell align="center" className={classes.cell}>
-                  {row.nombre}
-                </TableCell>
-                <TableCell align="center" className={classes.cell}>
-                  N° {row.nsocio}
-                </TableCell>
-                <TableCell align="center" className={classes.cell}>
-                  <span>{row.inscripcion}</span>
-                  <br />
-                  <span style={{ color: "red" }}>{row.caducidad}</span>
-                </TableCell>
-                <TableCell align="center">
-                  <DoneOutlineIcon
-                    color="primary"
-                    className={row.estado == "Activo" ? "show" : "hidden"}
-                  />
-                  <WarningIcon
-                    color="primary"
-                    className={row.estado == "1" ? "show" : "hidden"}
-                  />
-                  <AssignmentLateIcon
-                    color="primary"
-                    className={row.estado == "1" ? "show" : "hidden"}
-                  />
-                  <CloseIcon
-                    color="primary"
-                    className={row.estado == "1" ? "show" : "hidden"}
-                  />
-                  <PaymentIcon
-                    color="primary"
-                    className={row.estado == "1" ? "show" : "hidden"}
-                  />
-                </TableCell>
-                <TableCell align="center" className={classes.cell}>
-                  <IconButton onClick={(e) => editSocio(row.nsocio)}>
-                    <EditIcon color="primary" />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center" className={classes.cell}>
-                  <IconButton>
-                    <DeleteForeverIcon color="error" />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center" className={classes.cell}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    style={{ color: "white" }}
-                    onClick={(e) => history.push(`/usuario?id=${row.nsocio}`)}
-                  >
-                    Acceder
-                  </Button>
-                </TableCell>
+          {users.length > 0 ? (
+            users
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => (
+                <TableBody>
+                  <TableRow key={row.nsocio}>
+                    <TableCell align="center" className={classes.cell}>
+                      {row.nombre}
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell}>
+                      N° {row.nsocio}
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell}>
+                      <span>{row.inscripcion}</span>
+                      <br />
+                      <span style={{ color: "red" }}>{row.caducidad}</span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <DoneOutlineIcon
+                        color="primary"
+                        className={row.estado == "Activo" ? "show" : "hidden"}
+                      />
+                      <WarningIcon
+                        color="primary"
+                        className={row.estado == "1" ? "show" : "hidden"}
+                      />
+                      <AssignmentLateIcon
+                        color="primary"
+                        className={row.estado == "1" ? "show" : "hidden"}
+                      />
+                      <CloseIcon
+                        color="primary"
+                        className={row.estado == "1" ? "show" : "hidden"}
+                      />
+                      <PaymentIcon
+                        color="primary"
+                        className={row.estado == "1" ? "show" : "hidden"}
+                      />
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell}>
+                      <IconButton onClick={(e) => editSocio(row.nsocio)}>
+                        <EditIcon color="primary" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell}>
+                      <IconButton>
+                        <DeleteForeverIcon color="error" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        style={{ color: "white" }}
+                        onClick={(e) =>
+                          history.push(`/usuario?id=${row.nsocio}`)
+                        }
+                      >
+                        Acceder
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              ))
+          ) : (
+            <div className="noUser">
+              {alert != ""
+                ? alert
+                : "No hay resultados que coincidan con la busqueda"}
+            </div>
+          )}
+          {users.length > 0 ? (
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  labelRowsPerPage="Líneas por página"
+                  rowsPerPageOptions={[
+                    5,
+                    10,
+                    25,
+                    { label: "Todos", value: -1 },
+                  ]}
+                  colSpan={3}
+                  count={users.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  ActionsComponent={TablePaginationActions}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                labelRowsPerPage="Líneas por página"
-                rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
-                colSpan={3}
-                count={state.users.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                ActionsComponent={TablePaginationActions}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
-            </TableRow>
-          </TableFooter>
+            </TableFooter>
+          ) : null}
         </Table>
       </TableContainer>
-      <div className="noUser"></div>
     </main>
   );
 }

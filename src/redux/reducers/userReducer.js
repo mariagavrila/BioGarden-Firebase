@@ -4,11 +4,17 @@ import {
   SET_UNAUTHENTICATED,
   SET_LOGOUT,
   CLEAR_ERRORS,
+  LOADING_USERS,
+  USERS_LOADED,
+  FAIL_USERS,
 } from "../types";
 
 const initialState = {
   loading: false,
   authenticated: false,
+  loadingUsers: false,
+  users: [],
+  error: "",
 };
 
 export default function (state = initialState, action) {
@@ -36,6 +42,23 @@ export default function (state = initialState, action) {
       };
     case SET_LOGOUT:
       return initialState;
+    case LOADING_USERS:
+      return {
+        ...state,
+        loadingUsers: true,
+      };
+    case USERS_LOADED:
+      return {
+        ...state,
+        loadingUsers: false,
+        users: action.payload,
+      };
+    case FAIL_USERS:
+      return {
+        ...state,
+        loadingUsers: false,
+        error: action.payload,
+      };
     default:
       return state;
   }
