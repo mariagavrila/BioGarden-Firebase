@@ -51,6 +51,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loadingUsers: false,
+        error: "",
         users: action.payload,
       };
     case FAIL_USERS:

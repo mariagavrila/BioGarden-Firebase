@@ -61,11 +61,13 @@ a {
   color: rgba(255, 255, 255, 0.288);
 }
 .noUser {
-  font-size: 1.2rem;
-  margin-top: 1rem;
+  position: absolute;
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-top: 2rem;
   text-align: center;
-  color: #2f4858;
-  background: #ffd884b9;
+  color: #2a3c47;
+  width: 90%;
 }
 .floatLeft {
   float: left;

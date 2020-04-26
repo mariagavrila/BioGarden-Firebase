@@ -62,7 +62,7 @@ export const getUsersData = (data) => (dispatch) => {
       console.log(err);
       dispatch({
         type: FAIL_USERS,
-        payload: "Error interno. Inténtelo más tarde",
+        payload: "Error interno. ¡Inténtelo más tarde!",
       });
     });
 };

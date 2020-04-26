@@ -19,7 +19,6 @@ import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import EditIcon from "@material-ui/icons/Edit";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
 import { getUsersData } from "../redux/actions/userActions";
@@ -36,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
       width: 200,
+      marginBottom: "1.5rem",
     },
   },
   toolbar: {
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 650,
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(0),
     textAlign: "center",
     color: theme.palette.text.secondary,
     paddingBottom: 0,
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     fontWeight: "bold",
     fontSize: "1rem",
-    padding: ".7rem",
+    padding: ".5rem",
   },
   cell: {
     padding: ".4rem",
@@ -152,33 +152,37 @@ export default function Socios(props) {
           Buscar
         </Button>
       </form>
-      <SimpleModal type="add" />
-      <SimpleModal type="edit" />
-      {isLoading ? <LinearProgress color="primary" /> : null}
 
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
+      {isLoading ? (
+        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+      ) : null}
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={2}>
+          <SimpleModal type="add" />
+        </Grid>
+        <Grid item xs={12} sm={10}>
           <Paper className={classes.paper}>
-            <Grid container spacing={1}>
-              <Grid item xs={2}>
+            <Grid container spacing={0}>
+              <Grid item sm={3}>
                 <DoneOutlineIcon color="primary" fontSize="large" />
                 <p className="iconos"> Todo OK</p>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item sm={3}>
                 <WarningIcon
                   style={{ color: "rgb(255, 72, 0)" }}
                   fontSize="large"
                 />
                 <p className="iconos">Socio lleva X meses sin venir</p>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item sm={3}>
                 <AssignmentLateIcon
                   style={{ color: "rgb(255, 196, 0)" }}
                   fontSize="large"
                 />
                 <p className="iconos"> Falta algún dato</p>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item sm={3}>
                 <CloseIcon style={{ color: "red" }} fontSize="large" />
                 <p className="iconos"> Socio desactivado</p>
               </Grid>
@@ -255,9 +259,7 @@ export default function Socios(props) {
                       />
                     </TableCell>
                     <TableCell align="center" className={classes.cell}>
-                      <IconButton onClick={(e) => editSocio(row.nsocio)}>
-                        <EditIcon color="primary" />
-                      </IconButton>
+                      <SimpleModal type="edit" />
                     </TableCell>
                     <TableCell align="center" className={classes.cell}>
                       <IconButton>
