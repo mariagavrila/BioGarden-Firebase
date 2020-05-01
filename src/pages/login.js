@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -65,15 +66,6 @@ export default function Login(props) {
   });
   let { email, password, emailError, passwordError } = state;
 
-  console.log(state);
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      dispatch({ type: SET_AUTHENTICATED });
-    }
-  });
-
   const validateEmail = () => {
     if (!email) {
       setState({
@@ -119,17 +111,15 @@ export default function Login(props) {
       [event.target.name]: event.target.value,
     });
   };
-  const isLoggedIn = useSelector((state) => state.user.authenticated);
+  const authenticated = useSelector((state) => state.user.authenticated);
   const loginError = useSelector((state) => state.user.error);
   const isLoading = useSelector((state) => state.user.loading);
   if (state.email != "") state.emailError = "";
   if (state.password != "") state.passwordError = "";
 
-  if (isLoggedIn) {
-    return null;
-  }
   return (
     <main className={classes.content}>
+      {authenticated ? <Redirect to="/" /> : null}
       <div className={classes.toolbar} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />

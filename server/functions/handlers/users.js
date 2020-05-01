@@ -5,7 +5,7 @@ const config = require("../util/config");
 const firebase = require("firebase");
 firebase.initializeApp(config);
 
-const { validateFields } = require("../util/validators");
+const { validateFields, includes } = require("../util/validators");
 
 // Logar un usuario
 exports.login = (req, res) => {
@@ -54,13 +54,10 @@ exports.getUsers = (req, res) => {
             ? Number(user.memberNumber)
             : doc.memberNumber;
 
-        let docName = doc.name.includes(name);
-        let docLastName = doc.lastName.includes(lastName);
-
         //Se meten todos los usuarios que coinciden con la busqueda en un array para ser devueltos
         if (
-          docName &&
-          docLastName &&
+          includes(doc.name, name) &&
+          includes(doc.lastName, lastName) &&
           doc.dni === dni &&
           doc.memberNumber === memberNumber
         ) {

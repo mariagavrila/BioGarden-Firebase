@@ -1,15 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
-import { createBrowserHistory } from "history";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ProtectedRoute } from "./protectedRoutes";
+import jwtDecode from "jwt-decode";
 //Redux
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { SET_AUTHENTICATED } from "./redux/types";
+import { logoutUser } from "./redux/actions/userActions";
 //Components
 import Sidebar from "./components/sidebar";
 import Navbar from "./components/navbar";
@@ -24,7 +26,7 @@ import Comida from "./pages/comida";
 import Geneticas from "./pages/geneticas";
 import Usuario from "./components/usuario";
 
-const history = createBrowserHistory();
+import axios from "axios";
 
 const theme = createMuiTheme({
   palette: {
@@ -32,21 +34,33 @@ const theme = createMuiTheme({
       light: "#6abf69",
       main: "#388e3c",
       dark: "#00600f",
-      contrastText: "#000000"
+      contrastText: "#000000",
     },
     secondary: {
       light: "#d05ce3",
       main: "#9c27b0",
       dark: "#6a0080",
-      contrastText: "#ffffff"
-    }
-  }
+      contrastText: "#ffffff",
+    },
+  },
 });
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
-  }
+    display: "flex",
+  },
 }));
+
+const token = localStorage.user;
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    store.dispatch(logoutUser());
+    window.location.href = "/login";
+  } else {
+    store.dispatch({ type: SET_AUTHENTICATED });
+    axios.defaults.headers.common["Authorization"] = token;
+  }
+}
 
 function App() {
   const classes = useStyles();
@@ -59,9 +73,9 @@ function App() {
           <Router>
             <Sidebar />
             <Navbar />
-            <Login />
             <Switch>
-              <Route exact path="/" component={Home} />
+              <ProtectedRoute exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
               <ProtectedRoute exact path="/socios" component={Socios} />
               <ProtectedRoute exact path="/geneticas" component={Geneticas} />
               <ProtectedRoute exact path="/comida" component={Comida} />

@@ -28,9 +28,8 @@ export const loginUser = (email, password) => (dispatch) => {
       setAuthorizationHeader(res.data.token);
       let id = res.data.token;
       if (id) {
-        localStorage.setItem("user", id);
-        history.push("/");
         dispatch({ type: SET_AUTHENTICATED });
+        //history.push("/");
       } else {
         dispatch({
           type: SET_UNAUTHENTICATED,

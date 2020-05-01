@@ -116,7 +116,6 @@ export default function Socios(props) {
   const isLoading = useSelector((state) => state.user.loadingUsers);
   const users = useSelector((state) => state.user.users);
   const alert = useSelector((state) => state.user.error);
-  if (users) console.log(users.length);
   const editSocio = (id) => {
     console.log(id);
   };
@@ -129,11 +128,6 @@ export default function Socios(props) {
     setPage(0);
   };
 
-  const isLoggedIn = useSelector((state) => state.user.authenticated);
-
-  if (!isLoggedIn) {
-    return null;
-  }
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
@@ -219,76 +213,70 @@ export default function Socios(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          {users.length > 0 ? (
-            users
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableBody>
-                  <TableRow key={row.nsocio}>
-                    <TableCell align="center" className={classes.cell}>
-                      {row.nombre}
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      N° {row.nsocio}
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <span>{row.inscripcion}</span>
-                      <br />
-                      <span style={{ color: "red" }}>{row.caducidad}</span>
-                    </TableCell>
-                    <TableCell align="center">
-                      <DoneOutlineIcon
-                        color="primary"
-                        className={row.estado == "Activo" ? "show" : "hidden"}
-                      />
-                      <WarningIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
-                      />
-                      <AssignmentLateIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
-                      />
-                      <CloseIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
-                      />
-                      <PaymentIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
-                      />
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <SimpleModal type="edit" />
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <IconButton>
-                        <DeleteForeverIcon color="error" />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ color: "white" }}
-                        onClick={(e) =>
-                          history.push(`/usuario?id=${row.nsocio}`)
-                        }
-                      >
-                        Acceder
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ))
-          ) : (
-            <div className="noUser">
-              {alert != ""
-                ? alert
-                : "No hay resultados que coincidan con la busqueda"}
-            </div>
-          )}
+          {users.length > 0
+            ? users
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableBody>
+                    <TableRow key={row.nsocio}>
+                      <TableCell align="center" className={classes.cell}>
+                        {row.nombre}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        N° {row.nsocio}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <span>{row.inscripcion}</span>
+                        <br />
+                        <span style={{ color: "red" }}>{row.caducidad}</span>
+                      </TableCell>
+                      <TableCell align="center">
+                        <DoneOutlineIcon
+                          color="primary"
+                          className={row.estado == "Activo" ? "show" : "hidden"}
+                        />
+                        <WarningIcon
+                          color="primary"
+                          className={row.estado == "1" ? "show" : "hidden"}
+                        />
+                        <AssignmentLateIcon
+                          color="primary"
+                          className={row.estado == "1" ? "show" : "hidden"}
+                        />
+                        <CloseIcon
+                          color="primary"
+                          className={row.estado == "1" ? "show" : "hidden"}
+                        />
+                        <PaymentIcon
+                          color="primary"
+                          className={row.estado == "1" ? "show" : "hidden"}
+                        />
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <SimpleModal type="edit" />
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <IconButton>
+                          <DeleteForeverIcon color="error" />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ color: "white" }}
+                          onClick={(e) =>
+                            history.push(`/usuario?id=${row.nsocio}`)
+                          }
+                        >
+                          Acceder
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                ))
+            : null}
           {users.length > 0 ? (
             <TableFooter>
               <TableRow>
@@ -313,6 +301,13 @@ export default function Socios(props) {
           ) : null}
         </Table>
       </TableContainer>
+      {users.length === 0 ? (
+        <div className="noUser">
+          {alert != ""
+            ? alert
+            : "No hay resultados que coincidan con la busqueda."}
+        </div>
+      ) : null}
     </main>
   );
 }

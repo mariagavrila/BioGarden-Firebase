@@ -101,3 +101,8 @@ function isValidAge(age) {
     return false;
   }
 }
+exports.includes = (txtp, txt) => {
+  let a = txtp.trim().toLowerCase();
+  let b = txt.trim().toLowerCase();
+  return a.includes(b);
+};
