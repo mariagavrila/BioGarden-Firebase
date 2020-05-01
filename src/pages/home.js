@@ -19,6 +19,8 @@ import WarningIcon from "@material-ui/icons/Warning";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import CloseIcon from "@material-ui/icons/Close";
 import PaymentIcon from "@material-ui/icons/Payment";
+//Components
+import Checkout from "../components/checkout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -176,7 +178,6 @@ export default function Home(props) {
           </TableBody>
         </Table>
       </TableContainer>
-      {search}
       {users.length === 0 && search === true && isLoading === false ? (
         <div className="noUser">
           {alert != ""
@@ -184,6 +185,7 @@ export default function Home(props) {
             : "No hay resultados que coincidan con la busqueda."}
         </div>
       ) : null}
+      <Checkout />
     </main>
   );
 }
