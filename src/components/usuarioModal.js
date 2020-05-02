@@ -13,6 +13,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 //Redux
 import { addUser } from "../redux/actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
+import { USER_ERRORS, USER_HELPERS } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,22 +38,7 @@ export default function SimpleModal({ type }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  let [error, setError] = useState({
-    name: false,
-    lastName: false,
-    dni: false,
-    email: false,
-    birthDate: false,
-    serverStatus: true,
-  });
-  let [helperText, setHelperText] = useState({
-    name: "",
-    lastName: "",
-    dni: "",
-    email: "",
-    birthDate: "",
-    serverStatus: "",
-  });
+
   const [state, setState] = useState({
     name: "",
     lastName: "",
@@ -87,23 +73,15 @@ export default function SimpleModal({ type }) {
   };
   //Obtener la respuesta desde la tienda de redux
   const isLoading = useSelector((state) => state.user.modalLoading);
-  const reduxErrors = useSelector((state) => state.user.modalErrors);
+  const error = useSelector((state) => state.user.validUser);
+  const helperText = useSelector((state) => state.user.helperUser);
   const fail = useSelector((state) => state.user.modalFail);
 
   useEffect(() => {
-    //Si obtenemos la respuesta de redux con los errores actualizamos los errores del formulario
-    if (reduxErrors.errors) {
-      setError({
-        ...reduxErrors.errors,
-      });
-      setHelperText({
-        ...reduxErrors.mensaje,
-      });
-      if (reduxErrors.errors.serverStatus) {
-        setTimeout(() => {
-          setOpen(false);
-        }, 2000);
-      }
+    if (error.serverStatus) {
+      setTimeout(() => {
+        setOpen(false);
+      }, 2000);
     }
   });
 
@@ -121,32 +99,43 @@ export default function SimpleModal({ type }) {
     let value = e.target.value;
 
     if (value.length == 0) {
-      setError({
-        ...error,
-        [target]: true,
+      dispatch({
+        type: USER_ERRORS,
+        payload: {
+          [target]: true,
+        },
       });
-      setHelperText({
-        ...helperText,
-        [target]: requiredMsg,
+      dispatch({
+        type: USER_HELPERS,
+        payload: {
+          [target]: requiredMsg,
+        },
       });
     } else if (value.length < minLength) {
-      setError({
-        ...error,
-        [target]: true,
+      dispatch({
+        type: USER_ERRORS,
+        payload: {
+          [target]: true,
+        },
       });
-      setHelperText({
-        ...helperText,
-        [target]: msg,
+      dispatch({
+        type: USER_HELPERS,
+        payload: {
+          [target]: msg,
+        },
       });
     } else {
-      setError({
-        ...error,
-        [target]: false,
+      dispatch({
+        type: USER_ERRORS,
+        payload: {
+          [target]: false,
+        },
       });
-
-      setHelperText({
-        ...helperText,
-        [target]: "",
+      dispatch({
+        type: USER_HELPERS,
+        payload: {
+          [target]: "",
+        },
       });
     }
   };
@@ -154,23 +143,17 @@ export default function SimpleModal({ type }) {
   //Validar la fecha de nacimiento aparte por ser cogida de otro componente
   const validateBirthDate = () => {
     if (state.birthDate == "") {
-      setError({
-        ...error,
-        birthDate: true,
+      dispatch({
+        type: USER_ERRORS,
+        payload: {
+          birthDate: true,
+        },
       });
-      setHelperText({
-        ...helperText,
-        birthDate: "La fecha de nacimiento es obligatoria",
-      });
-    } else {
-      setError({
-        ...error,
-        birthDate: false,
-      });
-
-      setHelperText({
-        ...helperText,
-        birthDate: "",
+      dispatch({
+        type: USER_HELPERS,
+        payload: {
+          birthDate: "La fecha de nacimiento es obligatoria",
+        },
       });
     }
     if (!error.name && !error.lastName && !error.dni) return true;

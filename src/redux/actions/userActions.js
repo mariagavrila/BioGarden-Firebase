@@ -1,9 +1,4 @@
 import {
-  SET_USER,
-  SET_USERS,
-  SET_ERRORS,
-  CLEAR_ERRORS,
-  LOADING_UI,
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
   SET_LOGOUT,
@@ -11,9 +6,10 @@ import {
   LOADING_USERS,
   USERS_LOADED,
   FAIL_USERS,
-  MODAL_ERRORS,
   MODAL_LOADING,
   FAIL_MODAL,
+  USER_ERRORS,
+  USER_HELPERS,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
@@ -93,7 +89,8 @@ export const addUser = (data) => (dispatch) => {
   return axios
     .post(`${proxy}/user`, data)
     .then((res) => {
-      dispatch({ type: MODAL_ERRORS, payload: res.data });
+      dispatch({ type: USER_ERRORS, payload: res.data.errors });
+      dispatch({ type: USER_HELPERS, payload: res.data.mensaje });
     })
     .catch(() => {
       dispatch({

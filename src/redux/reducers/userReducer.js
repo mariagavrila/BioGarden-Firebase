@@ -10,6 +10,8 @@ import {
   MODAL_ERRORS,
   MODAL_LOADING,
   FAIL_MODAL,
+  USER_ERRORS,
+  USER_HELPERS,
 } from "../types";
 
 const initialState = {
@@ -21,6 +23,22 @@ const initialState = {
   modalErrors: {},
   modalLoading: false,
   modalFail: "",
+  validUser: {
+    name: false,
+    lastName: false,
+    birthDate: false,
+    dni: false,
+    email: false,
+    serverStatus: false,
+  },
+  helperUser: {
+    name: "",
+    lastName: "",
+    birthDate: "",
+    dni: "",
+    email: "",
+    serverStatus: "",
+  },
 };
 
 export default function (state = initialState, action) {
@@ -71,17 +89,28 @@ export default function (state = initialState, action) {
         ...state,
         modalLoading: true,
       };
-    case MODAL_ERRORS:
-      return {
-        ...state,
-        modalLoading: false,
-        modalErrors: action.payload,
-      };
     case FAIL_MODAL:
       return {
         ...state,
         modalLoading: false,
         modalFail: action.payload,
+      };
+    case USER_ERRORS:
+      return {
+        ...state,
+        modalLoading: false,
+        validUser: {
+          ...state.validUser,
+          ...action.payload,
+        },
+      };
+    case USER_HELPERS:
+      return {
+        ...state,
+        helperUser: {
+          ...state.helperUser,
+          ...action.payload,
+        },
       };
     default:
       return { ...state };
