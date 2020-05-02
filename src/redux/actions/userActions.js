@@ -10,6 +10,9 @@ import {
   FAIL_MODAL,
   USER_ERRORS,
   USER_HELPERS,
+  DELETING_USER,
+  USER_DELETED,
+  FAIL_DELETE,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
@@ -91,10 +94,44 @@ export const addUser = (data) => (dispatch) => {
     .then((res) => {
       dispatch({ type: USER_ERRORS, payload: res.data.errors });
       dispatch({ type: USER_HELPERS, payload: res.data.mensaje });
+      dispatch(
+        getUsersData({
+          nombre: "",
+          apellido: "",
+          dni: "",
+          nsocio: "",
+        })
+      );
     })
     .catch(() => {
       dispatch({
         type: FAIL_MODAL,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
+    });
+};
+// Eliminar un usuario
+export const deleteUser = (id) => (dispatch) => {
+  dispatch({ type: DELETING_USER });
+  return axios
+    .post(`${proxy}/user/${id}`)
+    .then(() => {
+      dispatch(
+        getUsersData({
+          nombre: "",
+          apellido: "",
+          dni: "",
+          nsocio: "",
+        })
+      );
+      dispatch({
+        type: USER_DELETED,
+        payload: "Usuario eliminado correctamente.",
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: FAIL_DELETE,
         payload: "Error interno. ¡Inténtelo más tarde!",
       });
     });

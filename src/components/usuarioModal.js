@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { addUser } from "../redux/actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
 import { USER_ERRORS, USER_HELPERS } from "../redux/types";
+import { getUsersData } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,9 +61,16 @@ export default function SimpleModal({ type }) {
     setOpen(false);
   };
   const handleChange = (event) => {
+    let id = event.target.id;
+    let value = event.target.value;
+    if (id === "name" || id === "lastName" || id === "city") {
+      value = value.toLowerCase();
+      value = value.replace(/\b\w/g, (l) => l.toUpperCase());
+      console.log(value);
+    }
     setState({
       ...state,
-      [event.target.id]: event.target.value,
+      [id]: value,
     });
   };
   const handleSubmit = (e) => {
@@ -196,6 +204,7 @@ export default function SimpleModal({ type }) {
           }}
           error={error.name}
           helperText={helperText.name}
+          style={{ textTransform: "capitalize" }}
         />
         <TextField
           id="lastName"

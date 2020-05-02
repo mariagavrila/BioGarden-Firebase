@@ -40,6 +40,7 @@ exports.getUsers = (req, res) => {
     memberNumber: req.body.nsocio,
   };
   db.collection("users")
+    .orderBy("name")
     .get()
     .then((data) => {
       let users = [];
@@ -62,6 +63,7 @@ exports.getUsers = (req, res) => {
           doc.memberNumber === memberNumber
         ) {
           users.push({
+            userId: document.id,
             nombre: `${doc.name} ${doc.lastName}`,
             nsocio: doc.memberNumber,
             inscripcion: doc.startInscriptionDate,
@@ -173,3 +175,9 @@ exports.postOneUser = async (req, res) => {
         res.status(500).json({ error: err.code });
       });
   };*/
+exports.deleteUser = (req, res) => {
+  const document = db.doc(`/users/${req.params.userId}`);
+  document.delete().catch((err) => {
+    return res.status(500).json({ error: err.code });
+  });
+};

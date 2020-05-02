@@ -14,14 +14,12 @@ import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import WarningIcon from "@material-ui/icons/Warning";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import CloseIcon from "@material-ui/icons/Close";
-import PaymentIcon from "@material-ui/icons/Payment";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
-import { getUsersData } from "../redux/actions/userActions";
 import SimpleModal from "../components/usuarioModal";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
@@ -29,6 +27,8 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import "./styles/socios.css";
+//Redux
+import { getUsersData, deleteUser } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -233,30 +233,26 @@ export default function Socios(props) {
                       <TableCell align="center">
                         <DoneOutlineIcon
                           color="primary"
-                          className={row.estado == "Activo" ? "show" : "hidden"}
-                        />
-                        <WarningIcon
-                          color="primary"
-                          className={row.estado == "1" ? "show" : "hidden"}
+                          className={row.estado === "1" ? "show" : "hidden"}
                         />
                         <AssignmentLateIcon
-                          color="primary"
-                          className={row.estado == "1" ? "show" : "hidden"}
+                          style={{ color: "rgb(255, 196, 0)" }}
+                          className={row.estado == "2" ? "show" : "hidden"}
+                        />
+                        <WarningIcon
+                          style={{ color: "rgb(255, 72, 0)" }}
+                          className={row.estado == "3" ? "show" : "hidden"}
                         />
                         <CloseIcon
-                          color="primary"
-                          className={row.estado == "1" ? "show" : "hidden"}
-                        />
-                        <PaymentIcon
-                          color="primary"
-                          className={row.estado == "1" ? "show" : "hidden"}
+                          style={{ color: "red" }}
+                          className={row.estado == "4" ? "show" : "hidden"}
                         />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
                         <SimpleModal type="edit" />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <IconButton>
+                        <IconButton onClick={(e) => deleteUser(row.id)}>
                           <DeleteForeverIcon color="error" />
                         </IconButton>
                       </TableCell>

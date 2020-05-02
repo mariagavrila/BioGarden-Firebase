@@ -7,11 +7,13 @@ import {
   LOADING_USERS,
   USERS_LOADED,
   FAIL_USERS,
-  MODAL_ERRORS,
   MODAL_LOADING,
   FAIL_MODAL,
   USER_ERRORS,
   USER_HELPERS,
+  DELETING_USER,
+  USER_DELETED,
+  FAIL_DELETE,
 } from "../types";
 
 const initialState = {
@@ -39,6 +41,9 @@ const initialState = {
     email: "",
     serverStatus: "",
   },
+  deleting: false,
+  deleted: "",
+  resDelete: "",
 };
 
 export default function (state = initialState, action) {
@@ -111,6 +116,25 @@ export default function (state = initialState, action) {
           ...state.helperUser,
           ...action.payload,
         },
+      };
+    case DELETING_USER:
+      return {
+        ...state,
+        deleting: true,
+      };
+    case USER_DELETED:
+      return {
+        ...state,
+        deleting: false,
+        deleted: true,
+        resDelete: action.payload,
+      };
+    case FAIL_DELETE:
+      return {
+        ...state,
+        deleting: false,
+        deleted: false,
+        resDelete: action.payload,
       };
     default:
       return { ...state };
