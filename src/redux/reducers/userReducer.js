@@ -7,6 +7,9 @@ import {
   LOADING_USERS,
   USERS_LOADED,
   FAIL_USERS,
+  MODAL_ERRORS,
+  MODAL_LOADING,
+  FAIL_MODAL,
 } from "../types";
 
 const initialState = {
@@ -15,6 +18,9 @@ const initialState = {
   loadingUsers: false,
   users: [],
   error: "",
+  modalErrors: {},
+  modalLoading: false,
+  modalFail: "",
 };
 
 export default function (state = initialState, action) {
@@ -59,6 +65,23 @@ export default function (state = initialState, action) {
         ...state,
         loadingUsers: false,
         error: action.payload,
+      };
+    case MODAL_LOADING:
+      return {
+        ...state,
+        modalLoading: true,
+      };
+    case MODAL_ERRORS:
+      return {
+        ...state,
+        modalLoading: false,
+        modalErrors: action.payload,
+      };
+    case FAIL_MODAL:
+      return {
+        ...state,
+        modalLoading: false,
+        modalFail: action.payload,
       };
     default:
       return { ...state };

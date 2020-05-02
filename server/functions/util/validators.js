@@ -1,12 +1,11 @@
 exports.validateFields = (data) => {
-  let { name, lastName, dni, email, birthDate } = data;
+  let { name, lastName, dni, email } = data;
   let errores = {
     errors: {
       name: false,
       lastName: false,
       dni: false,
       email: false,
-      birthDate: false,
       serverStatus: false,
     },
     mensaje: {
@@ -14,7 +13,6 @@ exports.validateFields = (data) => {
       lastName: "",
       dni: "",
       email: "",
-      birthDate: "",
       serverError: "",
     },
   };
@@ -39,13 +37,6 @@ exports.validateFields = (data) => {
   if (!isValidName(lastName)) {
     errores.errors.lastName = true;
     errores.mensaje.lastName = "Apellido invalido";
-    counter++;
-  }
-
-  if (!isValidAge(birthDate)) {
-    errores.errors.birthDate = true;
-    errores.mensaje.birthDate =
-      "No cumple con la edad minima exigida para ser socio";
     counter++;
   }
 
@@ -75,7 +66,8 @@ function isValidDni(dni) {
 
 function isValidEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  if (email === "") return true;
+  else return re.test(String(email).toLowerCase());
 }
 
 function isValidName(name) {
@@ -86,21 +78,6 @@ function isValidName(name) {
   } else return true;
 }
 
-function isValidAge(age) {
-  if (age < Date.now()) {
-    var ageDifMs = Date.now() - age.getTime();
-    var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    let t = Math.abs(ageDate.getUTCFullYear() - 1970);
-    console.log(t);
-    if (t >= 18) {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
 exports.includes = (txtp, txt) => {
   let a = txtp.trim().toLowerCase();
   let b = txt.trim().toLowerCase();

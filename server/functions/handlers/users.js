@@ -78,20 +78,10 @@ exports.getUsers = (req, res) => {
 };
 //Añadir un usuario a la base de datos
 exports.postOneUser = async (req, res) => {
-  let {
-    name,
-    lastName,
-    dni,
-    email,
-    birthDate,
-    address,
-    zip,
-    city,
-    phone,
-  } = req.body;
+  let { name, lastName, dni, email, address, zip, city, phone } = req.body;
 
   //Se validan los campos del nuevo usuario
-  let validData = validateFields(name, lastName, dni, email, birthDate);
+  let validData = validateFields({ name, lastName, dni, email });
 
   //Si el campo serverStatus se encuentra en true, se añade el usuario a la bbdd
   if (validData.errors.serverStatus) {
@@ -114,9 +104,9 @@ exports.postOneUser = async (req, res) => {
     memberNum = max > 0 ? max : 1;
 
     let d = new Date();
-    //status 1 = activo
-    //status 2 = falta algún dato
-    //Si algunos de los campos no obligatorios se quedan vacíos, se pone el status en 2
+    // //status 1 = activo
+    // //status 2 = falta algún dato
+    // //Si algunos de los campos no obligatorios se quedan vacíos, se pone el status en 2
     let status;
     if (
       address === "" ||
@@ -141,7 +131,8 @@ exports.postOneUser = async (req, res) => {
       }`,
     };
     //Se añade el usuario
-    db.collection("users")
+    await db
+      .collection("users")
       .add(newUser)
       .catch(() => {
         validData.errors.serverStatus = false;
@@ -150,7 +141,7 @@ exports.postOneUser = async (req, res) => {
       });
   }
   //Se devuelve el objeto que contiene tanto los errores como el éxito de la inserción
-  res.json(validData);
+  return res.json(validData);
 };
 
 // Fetch one User

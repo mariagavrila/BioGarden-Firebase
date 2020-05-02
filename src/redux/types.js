@@ -7,6 +7,10 @@ export const LOADING_USER = "LOADING_USER";
 export const LOADING_USERS = "LOADING_USERS";
 export const USERS_LOADED = "USERS_LOADED";
 export const FAIL_USERS = "FAIL_USERS";
+export const MODAL_ERRORS = "MODAL_ERRORS";
+export const MODAL_LOADING = "MODAL_LOADING";
+export const FAIL_MODAL = "FAIL_MODAL";
+
 //UI reducer types
 export const SET_ERRORS = "SET_ERRORS";
 export const LOADING_UI = "LOADING_UI";

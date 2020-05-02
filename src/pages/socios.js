@@ -301,7 +301,7 @@ export default function Socios(props) {
           ) : null}
         </Table>
       </TableContainer>
-      {users.length === 0 ? (
+      {users.length === 0 && isLoading === false ? (
         <div className="noUser">
           {alert != ""
             ? alert

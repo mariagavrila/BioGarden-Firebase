@@ -33,7 +33,7 @@ export default function MaterialUIPickers({
     setHelperText("");
     setSelectedDate(date);
     handleCalendar(
-      date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
     );
   };
 

@@ -11,6 +11,9 @@ import {
   LOADING_USERS,
   USERS_LOADED,
   FAIL_USERS,
+  MODAL_ERRORS,
+  MODAL_LOADING,
+  FAIL_MODAL,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
@@ -58,7 +61,6 @@ export const getUsersData = (data) => (dispatch) => {
       dispatch({ type: USERS_LOADED, payload: res.data });
     })
     .catch((err) => {
-      console.log(err);
       dispatch({
         type: FAIL_USERS,
         payload: "Error interno. ¡Inténtelo más tarde!",
@@ -86,17 +88,18 @@ export const getUserData = (id) => {
     });
 };
 // Post one user
-export const addUser = (data) => {
+export const addUser = (data) => (dispatch) => {
+  dispatch({ type: MODAL_LOADING });
   return axios
-    .post(`${proxy}/users`, data)
+    .post(`${proxy}/user`, data)
     .then((res) => {
-      console.log(res);
-      return {
-        msg: res.data,
-      };
+      dispatch({ type: MODAL_ERRORS, payload: res.data });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      dispatch({
+        type: FAIL_MODAL,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
     });
 };
 

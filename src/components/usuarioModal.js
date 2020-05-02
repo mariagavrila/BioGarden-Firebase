@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { validate } from "email-validator";
+//Material UI
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
@@ -6,8 +8,11 @@ import TextField from "@material-ui/core/TextField";
 import MaterialUIPickers from "./datePicker";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
-import { validate } from "email-validator";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
+//Redux
 import { addUser } from "../redux/actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,8 +35,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleModal({ type }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState({
+  let [error, setError] = useState({
     name: false,
     lastName: false,
     dni: false,
@@ -39,7 +45,7 @@ export default function SimpleModal({ type }) {
     birthDate: false,
     serverStatus: true,
   });
-  const [helperText, setHelperText] = useState({
+  let [helperText, setHelperText] = useState({
     name: "",
     lastName: "",
     dni: "",
@@ -51,6 +57,7 @@ export default function SimpleModal({ type }) {
     name: "",
     lastName: "",
     dni: "",
+    email: "",
     birthDate: "",
     address: "",
     zip: "",
@@ -72,31 +79,43 @@ export default function SimpleModal({ type }) {
       [event.target.id]: event.target.value,
     });
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validateSubmit() && validateForm()) {
-      await addUser({ state }).then((response) => {
-        let res = response.msg;
-        setError({
-          ...res.errors,
-        });
-        setHelperText({
-          ...res.mensaje,
-        });
-        if (res.errors.serverStatus) {
-          setTimeout(() => {
-            setOpen(false);
-          }, 2000);
-        }
-      });
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (validateBirthDate() && validateForm()) {
+      dispatch(addUser(state));
     }
   };
+  //Obtener la respuesta desde la tienda de redux
+  const isLoading = useSelector((state) => state.user.modalLoading);
+  const reduxErrors = useSelector((state) => state.user.modalErrors);
+  const fail = useSelector((state) => state.user.modalFail);
+
+  useEffect(() => {
+    //Si obtenemos la respuesta de redux con los errores actualizamos los errores del formulario
+    if (reduxErrors.errors) {
+      setError({
+        ...reduxErrors.errors,
+      });
+      setHelperText({
+        ...reduxErrors.mensaje,
+      });
+      if (reduxErrors.errors.serverStatus) {
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+      }
+    }
+  });
+
+  //Obtener la fecha de nacimiento
   const handleCalendar = (date) => {
     setState({
       ...state,
       birthDate: date,
     });
   };
+
+  //Validación básica antes de mandar los datos al servidor
   const validate = (e, minLength, msg, requiredMsg) => {
     let target = e.target.id;
     let value = e.target.value;
@@ -132,7 +151,8 @@ export default function SimpleModal({ type }) {
     }
   };
 
-  const validateSubmit = () => {
+  //Validar la fecha de nacimiento aparte por ser cogida de otro componente
+  const validateBirthDate = () => {
     if (state.birthDate == "") {
       setError({
         ...error,
@@ -156,6 +176,8 @@ export default function SimpleModal({ type }) {
     if (!error.name && !error.lastName && !error.dni) return true;
     else return false;
   };
+
+  //Validar el formulario
   const validateForm = () => {
     if (
       state.name != "" &&
@@ -166,6 +188,8 @@ export default function SimpleModal({ type }) {
       return true;
     else return false;
   };
+
+  //El cuerpo del modal
   const body = (
     <div className={classes.paper}>
       <form
@@ -269,10 +293,6 @@ export default function SimpleModal({ type }) {
           style={{ width: "95%" }}
           onChange={handleChange}
         />
-
-        <div className={error.serverStatus ? "invalidForm" : "validForm"}>
-          {helperText.serverStatus}
-        </div>
         <Button
           type="submit"
           variant="outlined"
@@ -283,6 +303,12 @@ export default function SimpleModal({ type }) {
           Añadir usuario
         </Button>
       </form>
+      {isLoading ? (
+        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+      ) : null}
+      <div className={error.serverStatus ? "validForm" : "invalidForm"}>
+        {fail !== "" ? fail : helperText.serverStatus}
+      </div>
     </div>
   );
 
