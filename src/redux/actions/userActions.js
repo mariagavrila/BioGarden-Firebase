@@ -13,6 +13,9 @@ import {
   DELETING_USER,
   USER_DELETED,
   FAIL_DELETE,
+  DATA_LOADED,
+  DATA_LOADING,
+  FAIL_DATA,
 } from "../types";
 import axios from "axios";
 import { createBrowserHistory } from "history";
@@ -66,31 +69,27 @@ export const getUsersData = (data) => (dispatch) => {
       });
     });
 };
-// Get one user
-export const getUserData = (id) => {
+// Obtener un usuario
+export const getUserData = (id) => (dispatch) => {
+  dispatch({ type: DATA_LOADING });
   return axios
-    .get(`${proxy}/users/${id}`)
+    .post(`${proxy}/users/${id}`)
     .then((res) => {
-      let data = res.data;
-      console.log(data);
-      return {
-        name: data.name,
-        lastName: data.lastName,
-        dni: data.dni,
-        consum: data.ludicOrThepeutic,
-        startInsc: data.startInscriptionDate,
-        endInsc: data.endInscriptionDate,
-      };
+      dispatch({ type: DATA_LOADED, payload: res.data });
     })
     .catch((err) => {
-      console.log(err);
+      dispatch({ type: DATA_LOADED, payload: err });
     });
 };
-// Post one user
-export const addUser = (data) => (dispatch) => {
+// Añadir o actualizar un usuario
+export const addUser = (data, user) => (dispatch) => {
   dispatch({ type: MODAL_LOADING });
+  let url;
+  if (user) url = `${proxy}/update/${user}`;
+  else url = `${proxy}/user`;
+  console.log(url);
   return axios
-    .post(`${proxy}/user`, data)
+    .post(url, data)
     .then((res) => {
       dispatch({ type: USER_ERRORS, payload: res.data.errors });
       dispatch({ type: USER_HELPERS, payload: res.data.mensaje });
@@ -114,8 +113,13 @@ export const addUser = (data) => (dispatch) => {
 export const deleteUser = (id) => (dispatch) => {
   dispatch({ type: DELETING_USER });
   return axios
-    .post(`${proxy}/user/${id}`)
-    .then(() => {
+    .post(`${proxy}/delete/${id}`)
+    .then((res) => {
+      console.log(res.data.message);
+      dispatch({
+        type: USER_DELETED,
+        payload: "Usuario eliminado correctamente.",
+      });
       dispatch(
         getUsersData({
           nombre: "",
@@ -124,12 +128,9 @@ export const deleteUser = (id) => (dispatch) => {
           nsocio: "",
         })
       );
-      dispatch({
-        type: USER_DELETED,
-        payload: "Usuario eliminado correctamente.",
-      });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       dispatch({
         type: FAIL_DELETE,
         payload: "Error interno. ¡Inténtelo más tarde!",

@@ -13,8 +13,13 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 //Redux
 import { addUser } from "../redux/actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
-import { USER_ERRORS, USER_HELPERS } from "../redux/types";
-import { getUsersData } from "../redux/actions/userActions";
+import {
+  USER_ERRORS,
+  USER_HELPERS,
+  ADD_USER,
+  CLEAR_USER,
+} from "../redux/types";
+import { getUserData } from "../redux/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,25 +40,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleModal({ type }) {
+export default function SimpleModal({ type, user }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
-  const [state, setState] = useState({
-    name: "",
-    lastName: "",
-    dni: "",
-    email: "",
-    birthDate: "",
-    address: "",
-    zip: "",
-    city: "",
-    phone: "",
-    observation: "",
-  });
-
   const handleOpen = () => {
+    dispatch({
+      type: CLEAR_USER,
+    });
+    if (user) {
+      dispatch(getUserData(user));
+    }
     setOpen(true);
   };
 
@@ -68,22 +66,31 @@ export default function SimpleModal({ type }) {
       value = value.replace(/\b\w/g, (l) => l.toUpperCase());
       console.log(value);
     }
-    setState({
-      ...state,
-      [id]: value,
+    dispatch({
+      type: ADD_USER,
+      payload: {
+        [id]: value,
+      },
     });
   };
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     if (validateBirthDate() && validateForm()) {
-      dispatch(addUser(state));
+      dispatch(addUser(userData, user));
     }
   };
-  //Obtener la respuesta desde la tienda de redux
+  //Obtener las datos de redux para añadir usuario
   const isLoading = useSelector((state) => state.user.modalLoading);
   const error = useSelector((state) => state.user.validUser);
   const helperText = useSelector((state) => state.user.helperUser);
   const fail = useSelector((state) => state.user.modalFail);
+
+  //Obtener las datos de redux para editar usuario
+  const dataLoading = useSelector((state) => state.user.dataLoading);
+  const userData = useSelector((state) => state.user.userData);
+  const failData = useSelector((state) => state.user.failData);
+
+  console.log(error);
 
   useEffect(() => {
     if (error.serverStatus) {
@@ -95,9 +102,11 @@ export default function SimpleModal({ type }) {
 
   //Obtener la fecha de nacimiento
   const handleCalendar = (date) => {
-    setState({
-      ...state,
-      birthDate: date,
+    dispatch({
+      type: ADD_USER,
+      payload: {
+        birthDate: date,
+      },
     });
   };
 
@@ -150,7 +159,7 @@ export default function SimpleModal({ type }) {
 
   //Validar la fecha de nacimiento aparte por ser cogida de otro componente
   const validateBirthDate = () => {
-    if (state.birthDate == "") {
+    if (userData.birthDate == "") {
       dispatch({
         type: USER_ERRORS,
         payload: {
@@ -171,10 +180,10 @@ export default function SimpleModal({ type }) {
   //Validar el formulario
   const validateForm = () => {
     if (
-      state.name != "" &&
-      state.lastName != "" &&
-      state.dni != "" &&
-      state.birthDate != ""
+      userData.name != "" &&
+      userData.lastName != "" &&
+      userData.dni != "" &&
+      userData.birthDate != ""
     )
       return true;
     else return false;
@@ -183,6 +192,11 @@ export default function SimpleModal({ type }) {
   //El cuerpo del modal
   const body = (
     <div className={classes.paper}>
+      {dataLoading ? (
+        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+      ) : null}
+      {failData !== "" ? <div className="invalidForm">{failData}</div> : null}
+
       <form
         className={classes.root}
         noValidate
@@ -193,6 +207,7 @@ export default function SimpleModal({ type }) {
           id="name"
           label="Nombre*"
           type="search"
+          value={userData.name}
           onChange={handleChange}
           onBlur={(e) => {
             validate(
@@ -210,6 +225,7 @@ export default function SimpleModal({ type }) {
           id="lastName"
           label="Apellidos*"
           type="search"
+          value={userData.lastName}
           onChange={handleChange}
           onBlur={(e) => {
             validate(
@@ -226,6 +242,7 @@ export default function SimpleModal({ type }) {
           id="dni"
           label="Dni*"
           type="search"
+          value={userData.dni}
           onChange={handleChange}
           onBlur={(e) => {
             validate(e, 9, "El DNI no es correcto", "El DNI es obligatorio");
@@ -242,29 +259,34 @@ export default function SimpleModal({ type }) {
           id="address"
           label="Dirección"
           type="search"
+          value={userData.address}
           onChange={handleChange}
         />
         <TextField
           id="zip"
           label="Código postal"
           type="search"
+          value={userData.zip}
           onChange={handleChange}
         />
         <TextField
           id="city"
           label="Ciudad"
           type="search"
+          value={userData.city}
           onChange={handleChange}
         />
         <TextField
           id="phone"
           label="Teléfono"
+          value={userData.phone}
           type="search"
           onChange={handleChange}
         />
         <TextField
           id="email"
           label="E-mail"
+          value={userData.email}
           type="search"
           onChange={handleChange}
           error={error.email}
@@ -272,6 +294,7 @@ export default function SimpleModal({ type }) {
         />
         <TextField
           id="observations"
+          value={userData.observations}
           label="Observaciones"
           multiline
           rows="2"
@@ -283,17 +306,29 @@ export default function SimpleModal({ type }) {
           }}
           variant="outlined"
           style={{ width: "95%" }}
-          onChange={handleChange}
+          onChange={handleSubmit}
         />
-        <Button
-          type="submit"
-          variant="outlined"
-          color="primary"
-          onClick={handleSubmit}
-          style={{ margin: ".8rem 0 .8rem 0" }}
-        >
-          Añadir usuario
-        </Button>
+        {type == "add" ? (
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            onClick={handleOpen}
+            style={{ margin: ".8rem 0 .8rem 0" }}
+          >
+            Añadir usuario
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            onClick={handleSubmit}
+            style={{ margin: ".8rem 0 .8rem 0" }}
+          >
+            Actualizar usuario
+          </Button>
+        )}
       </form>
       {isLoading ? (
         <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
@@ -321,12 +356,7 @@ export default function SimpleModal({ type }) {
           <EditIcon />
         </IconButton>
       )}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>
     </div>

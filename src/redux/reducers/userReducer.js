@@ -14,6 +14,11 @@ import {
   DELETING_USER,
   USER_DELETED,
   FAIL_DELETE,
+  DATA_LOADED,
+  DATA_LOADING,
+  FAIL_DATA,
+  ADD_USER,
+  CLEAR_USER,
 } from "../types";
 
 const initialState = {
@@ -44,6 +49,20 @@ const initialState = {
   deleting: false,
   deleted: "",
   resDelete: "",
+  dataLoading: false,
+  userData: {
+    name: "",
+    lastName: "",
+    dni: "",
+    email: "",
+    birthDate: "",
+    address: "",
+    zip: "",
+    city: "",
+    phone: "",
+    observation: "",
+  },
+  failData: "",
 };
 
 export default function (state = initialState, action) {
@@ -135,6 +154,44 @@ export default function (state = initialState, action) {
         deleting: false,
         deleted: false,
         resDelete: action.payload,
+      };
+    case DATA_LOADING:
+      return {
+        ...state,
+        dataLoading: true,
+      };
+    case DATA_LOADED:
+      return {
+        ...state,
+        dataLoading: false,
+        userData: action.payload,
+      };
+    case FAIL_DATA:
+      return {
+        ...state,
+        dataLoading: false,
+        failData: action.payload,
+      };
+    case ADD_USER:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          ...action.payload,
+        },
+      };
+    case CLEAR_USER:
+      return {
+        ...state,
+        userData: {
+          ...initialState.userData,
+        },
+        validUser: {
+          ...initialState.validUser,
+        },
+        helperUser: {
+          ...initialState.helperUser,
+        },
       };
     default:
       return { ...state };

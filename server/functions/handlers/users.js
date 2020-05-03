@@ -138,7 +138,7 @@ exports.postOneUser = async (req, res) => {
       .add(newUser)
       .catch(() => {
         validData.errors.serverStatus = false;
-        validData.mensaje.serverError =
+        validData.mensaje.serverStatus =
           "Error en el servidor.Inténtelo más tarde.";
       });
   }
@@ -146,38 +146,87 @@ exports.postOneUser = async (req, res) => {
   return res.json(validData);
 };
 
-// Fetch one User
-/*exports.getUser = (req, res) => {
-    let UserData = {};
-    db.doc(`/users/${req.params.UserId}`)
-      .get()
-      .then((doc) => {
-        if (!doc.exists) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-        UserData = doc.data();
-        UserData.UserId = doc.id;
-        return db
-          .collection('comments')
-          .orderBy('createdAt', 'desc')
-          .where('UserId', '==', req.params.UserId)
-          .get();
-      })
-      .then((data) => {
-        UserData.comments = [];
-        data.forEach((doc) => {
-          UserData.comments.push(doc.data());
-        });
-        return res.json(UserData);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: err.code });
-      });
-  };*/
+// Devolver los datos de un usuario
+exports.getUser = (req, res) => {
+  const document = db.doc(`/users/${req.params.userId}`);
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      }
+      return res.json(doc.data());
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .json({ error: "Error en el servidor.Inténtelo más tarde." });
+    });
+};
 exports.deleteUser = (req, res) => {
   const document = db.doc(`/users/${req.params.userId}`);
-  document.delete().catch((err) => {
-    return res.status(500).json({ error: err.code });
-  });
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      } else {
+        return document.delete();
+      }
+    })
+    .then(() => {
+      res.json({ message: "Usuario eliminado correctamente." });
+    })
+    .catch(() => {
+      return res
+        .status(500)
+        .json({ error: "Error interno. ¡Inténtelo más tarde!" });
+    });
+};
+exports.updateUser = (req, res) => {
+  const document = db.doc(`/users/${req.params.userId}`);
+  let { name, lastName, dni, email, address, zip, city, phone } = req.body;
+
+  //Se validan los campos del nuevo usuario
+  let validData = validateFields({ name, lastName, dni, email });
+
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      } else {
+        //Si el campo serverStatus se encuentra en true, se añade el usuario a la bbdd
+        if (validData.errors.serverStatus) {
+          //status 1 = activo
+          //status 2 = falta algún dato
+          //Si algunos de los campos no obligatorios se quedan vacíos, se pone el status en 2
+          let status;
+          if (
+            address === "" ||
+            zip === "" ||
+            city === "" ||
+            phone === "" ||
+            email === ""
+          ) {
+            status = "2";
+          } else status = "1";
+
+          //Se actualiza el usuario
+          return document.update({ ...req.body, status });
+        }
+      }
+    })
+    .then(() => {
+      validData.mensaje.serverStatus = "Usuario actualizado correctamente";
+      //Se devuelve el objeto que contiene tanto los errores como el éxito de la inserción
+      return res.json(validData);
+    })
+    .catch(() => {
+      validData.errors.serverStatus = false;
+      validData.mensaje.serverStatus =
+        "Error en el servidor.Inténtelo más tarde.";
+      //Se devuelve el objeto que contiene tanto los errores como el éxito de la inserción
+      return res.json(validData);
+    });
 };

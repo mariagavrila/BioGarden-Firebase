@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
+import "./styles/socios.css";
+import DeleteModal from "../components/confirmDelete";
+//Material UI
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
@@ -17,7 +20,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
 import SimpleModal from "../components/usuarioModal";
@@ -26,7 +28,6 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import LastPageIcon from "@material-ui/icons/LastPage";
-import "./styles/socios.css";
 //Redux
 import { getUsersData, deleteUser } from "../redux/actions/userActions";
 
@@ -213,12 +214,12 @@ export default function Socios(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          {users.length > 0
-            ? users
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableBody>
-                    <TableRow key={row.nsocio}>
+          <TableBody>
+            {users.length > 0
+              ? users
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow key={row.userId}>
                       <TableCell align="center" className={classes.cell}>
                         {row.nombre}
                       </TableCell>
@@ -249,12 +250,10 @@ export default function Socios(props) {
                         />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <SimpleModal type="edit" />
+                        <SimpleModal type="edit" user={row.userId} />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <IconButton onClick={(e) => deleteUser(row.id)}>
-                          <DeleteForeverIcon color="error" />
-                        </IconButton>
+                        <DeleteModal id={row.userId} />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
                         <Button
@@ -270,9 +269,9 @@ export default function Socios(props) {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  </TableBody>
-                ))
-            : null}
+                  ))
+              : null}
+          </TableBody>
           {users.length > 0 ? (
             <TableFooter>
               <TableRow>

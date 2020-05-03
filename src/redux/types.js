@@ -14,6 +14,11 @@ export const USER_HELPERS = "USER_HELPERS";
 export const DELETING_USER = "DELETING_USER";
 export const USER_DELETED = "USER_DELETED";
 export const FAIL_DELETE = "FAIL_DELETE";
+export const DATA_LOADING = "DATA_LOADING";
+export const DATA_LOADED = "DATA_LOADED";
+export const FAIL_DATA = "FAIL_DATA";
+export const ADD_USER = "ADD_USER";
+export const CLEAR_USER = "CLEAR_USER";
 //UI reducer types
 export const SET_ERRORS = "SET_ERRORS";
 export const LOADING_UI = "LOADING_UI";

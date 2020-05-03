@@ -33,6 +33,7 @@ export default function MaterialUIPickers({ handleCalendar }) {
       },
     });
     setSelectedDate(date);
+
     handleCalendar(
       date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
     );
@@ -41,6 +42,12 @@ export default function MaterialUIPickers({ handleCalendar }) {
   const helperTextDate = useSelector(
     (state) => state.user.helperUser.birthDate
   );
+  const birthDate = useSelector((state) => state.user.userData.birthDate);
+  var date;
+  if (birthDate !== "") {
+    let bd = birthDate.split("/");
+    date = new Date(bd[2], bd[1], bd[0]);
+  } else date = maxDate;
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -51,7 +58,7 @@ export default function MaterialUIPickers({ handleCalendar }) {
         id="date-picker-dialog"
         label="Fecha nacimiento*"
         format="dd/MM/yyyy"
-        value={selectedDate}
+        value={date}
         onChange={handleDateChange}
         disableFuture
         maxDate={maxDate}

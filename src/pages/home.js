@@ -123,7 +123,7 @@ export default function Home(props) {
           id="filterTable"
         >
           <TableBody>
-            {users.length > 0
+            {users.length > 0 && search === true
               ? users.map((row) => (
                   <TableRow key={row.nsocio}>
                     <TableCell align="center" className={classes.cell}>
@@ -140,23 +140,19 @@ export default function Home(props) {
                     <TableCell align="center">
                       <DoneOutlineIcon
                         color="primary"
-                        className={row.estado == "Activo" ? "show" : "hidden"}
-                      />
-                      <WarningIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
+                        className={row.estado === "1" ? "show" : "hidden"}
                       />
                       <AssignmentLateIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
+                        style={{ color: "rgb(255, 196, 0)" }}
+                        className={row.estado == "2" ? "show" : "hidden"}
+                      />
+                      <WarningIcon
+                        style={{ color: "rgb(255, 72, 0)" }}
+                        className={row.estado == "3" ? "show" : "hidden"}
                       />
                       <CloseIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
-                      />
-                      <PaymentIcon
-                        color="primary"
-                        className={row.estado == "1" ? "show" : "hidden"}
+                        style={{ color: "red" }}
+                        className={row.estado == "4" ? "show" : "hidden"}
                       />
                     </TableCell>
                     <TableCell align="center" className={classes.cell}>

@@ -13,7 +13,7 @@ exports.validateFields = (data) => {
       lastName: "",
       dni: "",
       email: "",
-      serverError: "",
+      serverStatus: "",
     },
   };
   let counter = 0;
