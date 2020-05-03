@@ -11,6 +11,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import { deleteUser } from "../redux/actions/userActions";
+import { CLEAR_USER } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +38,9 @@ export default function DeleteModal({ id }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
+    dispatch({
+      type: CLEAR_USER,
+    });
     setOpen(true);
   };
 
@@ -54,7 +58,7 @@ export default function DeleteModal({ id }) {
   const deleting = useSelector((state) => state.user.deleting);
   const deleted = useSelector((state) => state.user.deleted);
   const resDelete = useSelector((state) => state.user.resDelete);
-
+  console.log(deleted);
   useEffect(() => {
     if (deleted) {
       setTimeout(() => {

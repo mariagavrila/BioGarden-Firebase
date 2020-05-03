@@ -162,7 +162,7 @@ export default function Home(props) {
                         size="small"
                         style={{ color: "white" }}
                         onClick={(e) =>
-                          history.push(`/usuario?id=${row.nsocio}`)
+                          history.push(`/usuario?id=${row.userId}`)
                         }
                       >
                         Acceder

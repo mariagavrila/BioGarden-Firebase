@@ -46,9 +46,10 @@ export default function SimpleModal({ type, user }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
-    dispatch({
-      type: CLEAR_USER,
-    });
+    if (error.serverStatus)
+      dispatch({
+        type: CLEAR_USER,
+      });
     if (user) {
       dispatch(getUserData(user));
     }
@@ -90,8 +91,6 @@ export default function SimpleModal({ type, user }) {
   const userData = useSelector((state) => state.user.userData);
   const failData = useSelector((state) => state.user.failData);
 
-  console.log(error);
-
   useEffect(() => {
     if (error.serverStatus) {
       setTimeout(() => {
@@ -99,16 +98,6 @@ export default function SimpleModal({ type, user }) {
       }, 2000);
     }
   });
-
-  //Obtener la fecha de nacimiento
-  const handleCalendar = (date) => {
-    dispatch({
-      type: ADD_USER,
-      payload: {
-        birthDate: date,
-      },
-    });
-  };
 
   //Validación básica antes de mandar los datos al servidor
   const validate = (e, minLength, msg, requiredMsg) => {
@@ -250,11 +239,7 @@ export default function SimpleModal({ type, user }) {
           error={error.dni}
           helperText={helperText.dni}
         />
-        <MaterialUIPickers
-          handleCalendar={handleCalendar}
-          error={error.birthDate}
-          helperText={helperText.birthDate}
-        />
+        <MaterialUIPickers />
         <TextField
           id="address"
           label="Dirección"

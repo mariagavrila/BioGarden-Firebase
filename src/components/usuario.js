@@ -10,36 +10,38 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { getUserData } from "../redux/actions/userActions";
 import Button from "@material-ui/core/Button";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import "./components.css";
 import ListAltIcon from "@material-ui/icons/ListAlt";
+//Redux
+import { getUserData } from "../redux/actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   toolbar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
+    ...theme.mixins.toolbar,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
   paper: {
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
-    height: "25vh"
-  }
+    height: "25vh",
+  },
 }));
 
 function createData(fecha, comentario) {
@@ -74,12 +76,12 @@ const rows = [
   createData(
     "15-03-2020 13:53:51",
     "Ha retirado de la genetica cahalote un total de 4 g"
-  )
+  ),
 ];
 
 export default function Usuario(props) {
   const classes = useStyles();
-  const { match } = props;
+  const dispatch = useDispatch();
   let id = props.location.search.split("=")[1];
 
   const [state, setState] = useState({
@@ -88,18 +90,12 @@ export default function Usuario(props) {
     dni: "",
     consum: "",
     startInsc: "",
-    endInsc: ""
+    endInsc: "",
   });
 
   useEffect(() => {
-    getUserData(id).then(userData => {
-      setState({
-        ...state,
-        ...userData
-      });
-    });
+    dispatch(getUserData(id));
   }, []);
-
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
@@ -145,7 +141,7 @@ export default function Usuario(props) {
         component={Paper}
         style={{
           marginTop: "1.8rem",
-          background: "rgba(143, 115, 49, 0.253)"
+          background: "rgba(143, 115, 49, 0.253)",
         }}
       >
         <Table className={classes.table} aria-label="simple table">
@@ -173,7 +169,7 @@ export default function Usuario(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
+            {rows.map((row) => (
               <TableRow key={row.fecha}>
                 <TableCell align="right">{row.fecha}</TableCell>
                 <TableCell align="right">{row.comentario}</TableCell>

@@ -47,7 +47,7 @@ const initialState = {
     serverStatus: "",
   },
   deleting: false,
-  deleted: "",
+  deleted: false,
   resDelete: "",
   dataLoading: false,
   userData: {
@@ -192,6 +192,8 @@ export default function (state = initialState, action) {
         helperUser: {
           ...initialState.helperUser,
         },
+        deleted: false,
+        resDelete: "",
       };
     default:
       return { ...state };

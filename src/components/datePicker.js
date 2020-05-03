@@ -1,7 +1,7 @@
 import "date-fns";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { USER_ERRORS, USER_HELPERS } from "../redux/types";
+import { USER_ERRORS, USER_HELPERS, ADD_USER } from "../redux/types";
 
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -9,7 +9,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 
-export default function MaterialUIPickers({ handleCalendar }) {
+export default function MaterialUIPickers() {
   const dispatch = useDispatch();
 
   var d = new Date();
@@ -17,7 +17,6 @@ export default function MaterialUIPickers({ handleCalendar }) {
   var month = d.getMonth();
   var day = d.getDate();
   var maxDate = new Date(year - 18, month, day);
-  const [selectedDate, setSelectedDate] = useState(maxDate);
 
   const handleDateChange = (date) => {
     dispatch({
@@ -32,11 +31,15 @@ export default function MaterialUIPickers({ handleCalendar }) {
         birthDate: "",
       },
     });
-    setSelectedDate(date);
 
-    handleCalendar(
-      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
-    );
+    let d =
+      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    dispatch({
+      type: ADD_USER,
+      payload: {
+        birthDate: d,
+      },
+    });
   };
   const errorDate = useSelector((state) => state.user.validUser.birthDate);
   const helperTextDate = useSelector(
