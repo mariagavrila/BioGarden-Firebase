@@ -21,7 +21,6 @@ import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
-import SimpleModal from "../components/usuarioModal";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -40,8 +39,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import NumberFormat from "react-number-format";
 import Divider from "@material-ui/core/Divider";
+import EditIcon from "@material-ui/icons/Edit";
 //Redux
-import { addNewProduct, getProducts } from "../redux/actions/dataActions";
+import {
+  addNewProduct,
+  getProducts,
+  updateProduct,
+} from "../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,26 +101,29 @@ export default function Productos(props) {
     category: "",
     name: "",
     price: "",
-    stock: "",
+    stock: 0,
     unit: "Kg",
   });
-  console.log(newProduct);
+  const [error, setError] = useState({
+    category: false,
+    name: false,
+    price: false,
+  });
+  const [msg, setMsg] = useState({
+    category: "Selecciona una categoría",
+    name: "Nombre invalido",
+    price: "Precio invalido",
+  });
+  const [edit, setEdit] = React.useState(true);
+
   let products = [];
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   useEffect(() => {
-    getProducts();
-    //hide table in firefox
-    // let table = document.getElementById("filterTable");
-    // if (table) {
-    //   if (table.rows.length == 0)
-    //     table.parentElement.style.visibility = "hidden";
-    //   else {
-    //     table.parentElement.style.visibility = "visible";
-    //   }
-    // }
-  }, []);
+    console.log("useeffect");
+    dispatch(getProducts);
+  });
 
   function handleChange(e) {
     setNewProduct({
@@ -134,9 +141,6 @@ export default function Productos(props) {
     if (e) e.preventDefault();
     dispatch(addNewProduct(newProduct));
   };
-  const isLoading = useSelector((state) => state.user.loadingUsers);
-  const users = useSelector((state) => state.user.users);
-  const alert = useSelector((state) => state.user.error);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -146,8 +150,12 @@ export default function Productos(props) {
     setPage(0);
   };
 
-  //Productos
+  //Estado obtener productos
   products = useSelector((state) => state.data.products);
+  const isLoading = useSelector((state) => state.data.isLoading);
+  const errorGetUser = useSelector((state) => state.data.error);
+  //Estado añadir producto
+  const isAdding = useSelector((state) => state.data.isAdding);
 
   const categoriesProps = {
     options: products,
@@ -155,6 +163,16 @@ export default function Productos(props) {
       if (option.section === newProduct.section) return option.category;
     },
   };
+
+  //Editar un producto
+  const handleEdit = () => {
+    setEdit(false);
+  };
+  const confirmEdit = () => {
+    dispatch(updateProduct(newProduct));
+    setEdit(true);
+  };
+  console.log(edit);
   const handleSearch = (text) => {};
   return (
     <main className={classes.content}>
@@ -165,7 +183,7 @@ export default function Productos(props) {
         </Typography>
         <Divider variant="middle" style={{ marginBottom: ".2rem" }} />
         <form noValidate autoComplete="off" onSubmit={addProduct}>
-          <Grid container spacing={1} style={{ textAlign: "center" }}>
+          <Grid container spacing={0} style={{ textAlign: "center" }}>
             <Grid item xs={6} sm={3}>
               <FormControl component="fieldset">
                 <RadioGroup
@@ -203,10 +221,16 @@ export default function Productos(props) {
               />
             </Grid>
             <Grid item xs={6} sm={3} style={{ marginTop: ".9rem" }}>
-              <TextField id="name" onChange={handleChange} label="Producto" />
+              <TextField
+                id="name"
+                onChange={handleChange}
+                label="Producto"
+                error={error.name}
+              />
             </Grid>
             <Grid item xs={6} sm={3}>
               <TextField
+                error={error.price}
                 style={{ margin: ".8rem 2rem 0 0" }}
                 label="Precio"
                 onChange={handleChange}
@@ -268,10 +292,14 @@ export default function Productos(props) {
             </Grid>
           </Grid>
         </form>
-        {isLoading ? (
+        {isAdding ? (
           <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
         ) : null}
       </Paper>
+
+      {isLoading ? (
+        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+      ) : null}
 
       <TableContainer component={Paper}>
         <Table className={classes.table}>
@@ -301,6 +329,9 @@ export default function Productos(props) {
           <TableHead>
             <TableRow>
               <TableCell align="center" className={classes.header}>
+                Editar
+              </TableCell>
+              <TableCell align="center" className={classes.header}>
                 Producto
               </TableCell>
               <TableCell align="center" className={classes.header}>
@@ -319,69 +350,71 @@ export default function Productos(props) {
                 Unidad/Kg
               </TableCell>
               <TableCell align="center" className={classes.header}>
+                Actualizado
+              </TableCell>
+              <TableCell align="center" className={classes.header}>
                 Eliminar
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.length > 0
-              ? users
+            {products.length > 0
+              ? products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.userId}>
                       <TableCell align="center" className={classes.cell}>
-                        {row.nombre}
+                        {edit === true ? (
+                          <IconButton
+                            onClick={handleEdit}
+                            style={{ color: "yellow" }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        ) : (
+                          <div>
+                            <IconButton
+                              onClick={confirmEdit}
+                              style={{ color: "yellow" }}
+                            >
+                              <DoneOutlineIcon />
+                            </IconButton>
+                            <IconButton
+                              onClick={setEdit(true)}
+                              style={{ color: "yellow" }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        N° {row.nsocio}
+                        {row.name}
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <span>{row.inscripcion}</span>
-                        <br />
-                        <span style={{ color: "red" }}>{row.caducidad}</span>
+                        {row.section}
                       </TableCell>
-                      <TableCell align="center">
-                        <DoneOutlineIcon
-                          color="primary"
-                          className={row.estado === "1" ? "show" : "hidden"}
-                        />
-                        <AssignmentLateIcon
-                          style={{ color: "rgb(255, 196, 0)" }}
-                          className={row.estado == "2" ? "show" : "hidden"}
-                        />
-                        <WarningIcon
-                          style={{ color: "rgb(255, 72, 0)" }}
-                          className={row.estado == "3" ? "show" : "hidden"}
-                        />
-                        <CloseIcon
-                          style={{ color: "red" }}
-                          className={row.estado == "4" ? "show" : "hidden"}
-                        />
+                      <TableCell align="center">{row.category}</TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        {row.price}
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <SimpleModal type="edit" user={row.userId} />
+                        {row.stock}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        {row.unit}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        {row.date}
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
                         <DeleteModal id={row.userId} />
-                      </TableCell>
-                      <TableCell align="center" className={classes.cell}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          style={{ color: "white" }}
-                          onClick={(e) =>
-                            history.push(`/usuario?id=${row.nsocio}`)
-                          }
-                        >
-                          Acceder
-                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
               : null}
           </TableBody>
-          {users.length > 0 ? (
+          {products.length > 0 ? (
             <TableFooter>
               <TableRow>
                 <TablePagination
@@ -393,7 +426,7 @@ export default function Productos(props) {
                     { label: "Todos", value: -1 },
                   ]}
                   colSpan={3}
-                  count={users.length}
+                  count={products.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   ActionsComponent={TablePaginationActions}
@@ -405,10 +438,10 @@ export default function Productos(props) {
           ) : null}
         </Table>
       </TableContainer>
-      {users.length === 0 && isLoading === false ? (
+      {products.length === 0 && isLoading === false ? (
         <div className="noUser">
-          {alert != ""
-            ? alert
+          {errorGetUser != ""
+            ? errorGetUser
             : "No hay resultados que coincidan con la busqueda."}
         </div>
       ) : null}

@@ -69,7 +69,7 @@ export default function Home(props) {
     //   }
     // }
     dispatch(getProducts());
-  }, []);
+  });
 
   function handleChange(e) {
     setState({

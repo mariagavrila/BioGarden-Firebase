@@ -19,7 +19,7 @@ const {
 
 //Rutas de producto
 app.get("/mercado", getAllProducts);
-app.post("/product", postOneProduct);
+app.post("/mercado", postOneProduct);
 
 // Rutas de usuario
 app.post("/login", login);
