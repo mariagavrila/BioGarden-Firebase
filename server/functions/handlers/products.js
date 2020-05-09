@@ -1,32 +1,35 @@
 const { db } = require("../util/admin");
 
 exports.getAllProducts = (req, res) => {
-  db.collection("hierbas")
+  db.collection("mercado")
     .get()
-    .then(data => {
+    .then((data) => {
       let products = [];
-      data.forEach(doc => {
+      data.forEach((doc) => {
         products.push({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         });
       });
       return res.json(products);
     })
-    .catch(err => console.error(err));
+    .catch(() =>
+      res
+        .status(500)
+        .json({ error: "Error en el servidor.Inténtelo más tarde." })
+    );
 };
 
 exports.postOneProduct = (req, res) => {
   const newProduct = {
-    name: req.body.name
+    ...req.body,
   };
-  console.log(newProduct);
-  db.collection("hierbas")
+  db.collection("mercado")
     .add(newProduct)
-    .then(doc => {
+    .then((doc) => {
       res.json({ message: `document ${doc.id} created successfully` });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ error: "something went wrong" });
       console.error(err);
     });

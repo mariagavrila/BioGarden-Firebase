@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getUsersData } from "../redux/actions/userActions";
+import { getProducts } from "../redux/actions/dataActions";
 //Material UI
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -67,7 +68,8 @@ export default function Home(props) {
     //     table.parentElement.style.visibility = "visible";
     //   }
     // }
-  });
+    dispatch(getProducts());
+  }, []);
 
   function handleChange(e) {
     setState({
@@ -88,7 +90,7 @@ export default function Home(props) {
       })
     );
   };
-
+  //Usuarios
   const isLoading = useSelector((state) => state.user.loadingUsers);
   const users = useSelector((state) => state.user.users);
   const alert = useSelector((state) => state.user.error);

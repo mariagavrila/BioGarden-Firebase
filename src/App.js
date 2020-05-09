@@ -19,11 +19,9 @@ import Navbar from "./components/navbar";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Socios from "./pages/socios";
-import Colaboradores from "./pages/colaboradores";
 import Configuracion from "./pages/configuracion";
 import Informes from "./pages/informes";
-import Comida from "./pages/comida";
-import Geneticas from "./pages/geneticas";
+import Productos from "./pages/productos";
 import Usuario from "./components/usuario";
 
 import axios from "axios";
@@ -77,13 +75,7 @@ function App() {
               <ProtectedRoute exact path="/" component={Home} />
               <Route exact path="/login" component={Login} />
               <ProtectedRoute exact path="/socios" component={Socios} />
-              <ProtectedRoute exact path="/geneticas" component={Geneticas} />
-              <ProtectedRoute exact path="/comida" component={Comida} />
-              <ProtectedRoute
-                exact
-                path="/colaboradores"
-                component={Colaboradores}
-              />
+              <ProtectedRoute exact path="/productos" component={Productos} />
               <ProtectedRoute exact path="/informes" component={Informes} />
               <ProtectedRoute
                 exact

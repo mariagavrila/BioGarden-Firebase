@@ -17,11 +17,11 @@ const {
   updateUser,
 } = require("./handlers/users");
 
-//Products routes
-app.get("/products", getAllProducts);
+//Rutas de producto
+app.get("/mercado", getAllProducts);
 app.post("/product", postOneProduct);
 
-// Users route
+// Rutas de usuario
 app.post("/login", login);
 app.post("/users", FBAuth, getUsers);
 app.post("/users/:userId", FBAuth, getUser);

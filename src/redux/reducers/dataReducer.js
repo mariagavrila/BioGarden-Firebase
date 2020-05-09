@@ -1,15 +1,29 @@
-import { SET_USERS } from "../types";
+import { LOADING_PRODUCTS, SET_PRODUCTS, FAIL_PRODUCTS } from "../types";
 
 const initialState = {
-  users: []
+  isLoading: false,
+  products: [],
+  error: "",
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
-    case SET_USERS:
+    case LOADING_PRODUCTS:
       return {
         ...state,
-        usersUpdate: true,
+        isLoading: true,
+      };
+    case SET_PRODUCTS:
+      return {
+        ...state,
+        isLoading: false,
+        products: action.payload,
+      };
+    case FAIL_PRODUCTS:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
       };
     default:
       return state;

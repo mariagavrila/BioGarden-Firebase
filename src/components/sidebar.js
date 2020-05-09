@@ -17,42 +17,43 @@ import EqualizerIcon from "@material-ui/icons/Equalizer";
 import GroupIcon from "@material-ui/icons/Group";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
+import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import { useSelector } from "react-redux";
 
 const drawerWidth = 280;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawer: {
     zIndex: 0,
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
   },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   drawerClose: {
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1
-    }
+      width: theme.spacing(9) + 1,
+    },
   },
   toolbar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
-  }
+    ...theme.mixins.toolbar,
+  },
 }));
 
 export default function SideBar() {
@@ -60,7 +61,7 @@ export default function SideBar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const isLoggedIn = useSelector(state => state.user.authenticated);
+  const isLoggedIn = useSelector((state) => state.user.authenticated);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -78,13 +79,13 @@ export default function SideBar() {
       variant="permanent"
       className={clsx(classes.drawer, {
         [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open
+        [classes.drawerClose]: !open,
       })}
       classes={{
         paper: clsx({
           [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open
-        })
+          [classes.drawerClose]: !open,
+        }),
       }}
       onMouseOver={handleDrawerOpen}
       onMouseOut={handleDrawerClose}
@@ -110,35 +111,16 @@ export default function SideBar() {
         </Link>
       </List>
       <List>
-        <Link to="/geneticas">
-          <ListItem button key={"Gestión de genéticas"}>
+        <Link to="/productos">
+          <ListItem button key={"Gestión de productos"}>
             <ListItemIcon>
-              <ViewListIcon />
+              <ShoppingBasketIcon />
             </ListItemIcon>
-            <ListItemText primary="Gestión de genéticas" />
+            <ListItemText primary="Gestión de productos" />
           </ListItem>
         </Link>
       </List>
-      <List>
-        <Link to="/comida">
-          <ListItem button key={"Gestión de bebida y comida"}>
-            <ListItemIcon>
-              <FastfoodIcon />
-            </ListItemIcon>
-            <ListItemText primary="Gestión de bebida y comida" />
-          </ListItem>
-        </Link>
-      </List>
-      <List>
-        <Link to="/colaboradores">
-          <ListItem button key={"Socios colaboradores"}>
-            <ListItemIcon>
-              <PeopleOutlineIcon />
-            </ListItemIcon>
-            <ListItemText primary="Socios colaboradores" />
-          </ListItem>
-        </Link>
-      </List>
+
       <Divider />
       <List>
         <Link to="/informes">

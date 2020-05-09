@@ -11,6 +11,9 @@ import Typography from "@material-ui/core/Typography";
 import BuyForm from "./comprar";
 import PaymentForm from "./payment";
 import Review from "./review";
+import LinearProgress from "@material-ui/core/LinearProgress";
+//Redux
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -68,6 +71,8 @@ export default function Checkout() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
+  const isLoading = useSelector((state) => state.data.isLoading);
+
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -81,6 +86,9 @@ export default function Checkout() {
       <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
+          {isLoading ? (
+            <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+          ) : null}
           <Typography component="h1" variant="h4" align="center">
             Registrar Compra
           </Typography>
