@@ -40,12 +40,14 @@ import Input from "@material-ui/core/Input";
 import NumberFormat from "react-number-format";
 import Divider from "@material-ui/core/Divider";
 import EditIcon from "@material-ui/icons/Edit";
+import DoneIcon from "@material-ui/icons/Done";
 //Redux
 import {
   addNewProduct,
   getProducts,
   updateProduct,
 } from "../redux/actions/dataActions";
+import { CLEAR_PRODUCT, PRODUCT_ADDED } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,7 +94,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Productos(props) {
-  let history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -101,7 +102,7 @@ export default function Productos(props) {
     category: "",
     name: "",
     price: "",
-    stock: 0,
+    stock: "",
     unit: "Kg",
   });
   const [error, setError] = useState({
@@ -109,37 +110,116 @@ export default function Productos(props) {
     name: false,
     price: false,
   });
+  console.log(error);
   const [msg, setMsg] = useState({
-    category: "Selecciona una categoría",
+    category: "¡Selecciona una categoría!",
     name: "Nombre invalido",
     price: "Precio invalido",
   });
-  const [edit, setEdit] = React.useState(true);
+  const [edit, setEdit] = useState(false);
 
   let products = [];
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   useEffect(() => {
-    console.log("useeffect");
-    dispatch(getProducts);
-  });
-
+    dispatch(getProducts());
+  }, []);
+  //Guardar los datos cambiados en los inputs
   function handleChange(e) {
+    let id = e.target.id;
+    let value = e.target.value;
+    //Transformar en formato correcto el nombre del producto
+    if (id === "name") {
+      value = value.toLowerCase();
+      value = value.replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+    }
     setNewProduct({
       ...newProduct,
-      [e.target.id]: e.target.value,
+      [id]: value,
+    });
+    setError({
+      ...newProduct,
+      [id]: false,
     });
   }
+  //Guardar los datos cambiados en los inputs con formato especial
+  function handleChangeFormat(e) {
+    let name = e.target.name;
+    let value = e.target.value;
+
+    setNewProduct({
+      ...newProduct,
+      [name]: value,
+    });
+    setError({
+      ...newProduct,
+      [name]: false,
+    });
+  }
+  //Guardar los datos cambiados en los botones radio
   function handleRadio(e) {
     setNewProduct({
       ...newProduct,
       [e.target.name]: e.target.value,
     });
   }
+  //Gestionar campo nombre
+  const handleBlurName = (e) => {
+    if (e.target.value.length < 3) setError({ ...error, name: true });
+    else setError({ ...error, name: false });
+  };
+  //Gestionar campo precio
+  const handleBlurPrice = (e) => {
+    if (e.target.value <= 0) setError({ ...error, price: true });
+    else setError({ ...error, price: false });
+  };
+  //Validar los campos del producto
+  const validateProduct = () => {
+    //Validar en nombre
+    if (newProduct.name === "") {
+      console.log(newProduct, "llamada desde validate");
+      setError({ ...error, name: true }); //identica miarma
+    } else setError({ ...error, name: false });
+
+    //Validar el precio
+    if (newProduct.price === "") setError({ ...error, price: true });
+    else setError({ ...error, price: false });
+
+    //Validar la categoria
+    if (newProduct.category === "") setError({ ...error, category: true });
+    else setError({ ...error, category: false });
+  };
+  //vida mira esto
+  //Añadir el producto a la bbdd
   const addProduct = (e) => {
     if (e) e.preventDefault();
-    dispatch(addNewProduct(newProduct));
+    validateProduct();
+    //Comporbar que no hay ningun error
+    if (
+      newProduct.name === "" ||
+      newProduct.price === "" ||
+      newProduct.category === ""
+    )
+      return;
+    else {
+      console.log("entra");
+      if (!edit) dispatch(addNewProduct(newProduct));
+      else dispatch(updateProduct(newProduct.id));
+
+      setNewProduct({
+        section: "Fruta",
+        category: "",
+        name: "",
+        price: "",
+        stock: "",
+        unit: "Kg",
+      });
+      setEdit(false);
+      setTimeout(() => {
+        dispatch({ type: CLEAR_PRODUCT });
+      }, 3000);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -156,30 +236,52 @@ export default function Productos(props) {
   const errorGetUser = useSelector((state) => state.data.error);
   //Estado añadir producto
   const isAdding = useSelector((state) => state.data.isAdding);
+  const failAdd = useSelector((state) => state.data.failAdd);
+  const msgAdd = useSelector((state) => state.data.msgAdd);
+  //Estado actualizar producto
+
+  //Categorias disponibles
+  let fCategories = useSelector((state) => state.ui.fCategories);
+  let vCategories = useSelector((state) => state.ui.vCategories);
 
   const categoriesProps = {
-    options: products,
-    getOptionLabel: (option) => {
-      if (option.section === newProduct.section) return option.category;
-    },
+    options: newProduct.section === "Fruta" ? fCategories : vCategories,
+    getOptionLabel: (option) => option,
   };
 
   //Editar un producto
-  const handleEdit = () => {
+  const handleEdit = (id) => {
+    products.forEach((p) => {
+      if (p.id === id) {
+        setNewProduct({
+          ...p,
+        });
+        document.getElementById("name").focus();
+        setError({ ...error, category: false });
+        setEdit(true);
+        return;
+      }
+    });
+  };
+  //Limpiar el formulario
+  const clearForm = () => {
+    setNewProduct({
+      section: "Fruta",
+      category: "",
+      name: "",
+      price: "",
+      stock: "",
+      unit: "Kg",
+    });
     setEdit(false);
   };
-  const confirmEdit = () => {
-    dispatch(updateProduct(newProduct));
-    setEdit(true);
-  };
-  console.log(edit);
   const handleSearch = (text) => {};
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Paper className={classes.layout}>
         <Typography component="h1" variant="h5" align="center">
-          Añadir producto
+          {!edit ? "Añadir producto" : "Actualizar producto"}
         </Typography>
         <Divider variant="middle" style={{ marginBottom: ".2rem" }} />
         <form noValidate autoComplete="off" onSubmit={addProduct}>
@@ -188,7 +290,7 @@ export default function Productos(props) {
               <FormControl component="fieldset">
                 <RadioGroup
                   name="section"
-                  defaultValue={newProduct.section}
+                  value={newProduct.section}
                   onChange={handleRadio}
                 >
                   <FormControlLabel
@@ -209,33 +311,40 @@ export default function Productos(props) {
                 {...categoriesProps}
                 id="categories"
                 blurOnSelect
+                value={newProduct.category}
                 renderInput={(params) => (
                   <TextField {...params} label="Categoría" margin="normal" />
                 )}
                 onChange={(event, newValue) => {
                   setNewProduct({
                     ...newProduct,
-                    category: newValue.category,
+                    category: newValue,
                   });
+                  setError({ ...error, category: false });
                 }}
               />
             </Grid>
             <Grid item xs={6} sm={3} style={{ marginTop: ".9rem" }}>
               <TextField
+                value={newProduct.name}
                 id="name"
                 onChange={handleChange}
                 label="Producto"
                 error={error.name}
+                onBlur={handleBlurName}
+                helperText={error.name === true ? msg.name : ""}
               />
             </Grid>
             <Grid item xs={6} sm={3}>
               <TextField
+                value={newProduct.price}
                 error={error.price}
                 style={{ margin: ".8rem 2rem 0 0" }}
                 label="Precio"
-                onChange={handleChange}
-                name="numberformat"
+                onChange={handleChangeFormat}
+                name="price"
                 id="price"
+                onBlur={handleBlurPrice}
                 InputProps={{
                   inputComponent: NumberFormatCustom,
                   endAdornment: (
@@ -268,8 +377,10 @@ export default function Productos(props) {
                 </RadioGroup>
               </FormControl>
               <TextField
-                id="cantidad"
-                onChange={handleChange}
+                value={newProduct.stock}
+                id="stock"
+                onChange={handleChangeFormat}
+                name="stock"
                 label="Cantidad"
                 InputProps={{
                   inputComponent: NumberFormatCustom,
@@ -281,19 +392,33 @@ export default function Productos(props) {
                 }}
               />
               <Button
-                style={{ margin: "1rem 1rem", padding: ".3rem 2rem" }}
+                style={{ margin: "1rem .8rem", padding: ".2rem 1.2rem" }}
                 type="submit"
                 variant="outlined"
                 color="primary"
                 value="Submit"
               >
-                Añadir
+                {!edit ? "Añadir" : "Actualizar"}
+              </Button>
+              <Button
+                style={{ margin: "1rem 0", padding: ".2rem .3rem" }}
+                variant="outlined"
+                value="Submit"
+                onClick={clearForm}
+              >
+                Cancelar
               </Button>
             </Grid>
           </Grid>
         </form>
         {isAdding ? (
           <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+        ) : null}
+        {error.category ? (
+          <div className="invalidForm">{msg.category}</div>
+        ) : null}
+        {msgAdd !== "" ? (
+          <div className={!failAdd ? "validForm" : "invalidForm"}>{msgAdd}</div>
         ) : null}
       </Paper>
 
@@ -362,31 +487,14 @@ export default function Productos(props) {
               ? products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <TableRow key={row.userId}>
+                    <TableRow key={row.id}>
                       <TableCell align="center" className={classes.cell}>
-                        {edit === true ? (
-                          <IconButton
-                            onClick={handleEdit}
-                            style={{ color: "yellow" }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        ) : (
-                          <div>
-                            <IconButton
-                              onClick={confirmEdit}
-                              style={{ color: "yellow" }}
-                            >
-                              <DoneOutlineIcon />
-                            </IconButton>
-                            <IconButton
-                              onClick={setEdit(true)}
-                              style={{ color: "yellow" }}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          </div>
-                        )}
+                        <IconButton
+                          onClick={() => handleEdit(row.id)}
+                          style={{ color: "yellow" }}
+                        >
+                          <EditIcon />
+                        </IconButton>
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
                         {row.name}

@@ -2,6 +2,7 @@ const { db } = require("../util/admin");
 
 exports.getAllProducts = (req, res) => {
   db.collection("mercado")
+    .orderBy("name")
     .get()
     .then((data) => {
       let products = [];
@@ -21,41 +22,84 @@ exports.getAllProducts = (req, res) => {
 };
 
 //Añadir un producto a la base de datos
-exports.postOneProduct = async (req, res) => {
+exports.postOneProduct = (req, res) => {
   let name = req.body.name;
-
-  //Comporbar si ya existe un producto con este nombre
-  let validProduct = await db
-    .collection("mercado")
+  db.collection("mercado")
+    .where("name", "==", name)
     .get()
-    .then((data) => {
-      data.forEach((document) => {
-        let doc = document.data();
-        if (doc.name.trim() === name.trim()) return false;
+    .then((doc) => {
+      let docs = 0;
+      doc.forEach(() => {
+        docs++;
       });
-    });
-
-  let d = new Date();
-
-  //Si los datos son correctos se añade el producto
-  if (validProduct) {
-    //Se crea un nuevo producto
-    const newProduct = {
-      ...req.body,
-      date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
-    };
-    //Se añade el producto
-    db.collection("mercado")
-      .add(newProduct)
-      .then((doc) => {
+      if (docs === 0) {
+        let d = new Date();
+        //Se crea un nuevo producto
+        const newProduct = {
+          ...req.body,
+          date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+        };
+        //Se añade el producto
+        return db.collection("mercado").add(newProduct);
+      }
+    })
+    .then((doc) => {
+      if (doc)
         return res.json({
-          msg: `Producto con id ${doc.id} añadido correctamente`,
+          msg: `Producto añadido correctamente`,
         });
-      })
-      .catch(() => {
-        res
-          .status(500)
-          .json({ error: "Error en el servidor.Inténtelo más tarde." });
+      else
+        return res.json({
+          msg: `Ya existe este producto.`,
+        });
+    });
+};
+
+exports.deleteProduct = (req, res) => {
+  const document = db.doc(`/mercado/${req.params.productId}`);
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      } else {
+        return document.delete();
+      }
+    })
+    .then(() => {
+      res.json({ message: "Producto eliminado correctamente." });
+    })
+    .catch(() => {
+      return res
+        .status(500)
+        .json({ error: "Error interno. ¡Inténtelo más tarde!" });
+    });
+};
+exports.updateProduct = (req, res) => {
+  const document = db.doc(`/mercado/${req.params.productId}`);
+
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      } else {
+        let d = new Date();
+        //Se actualiza el producto
+        return document.update({
+          ...req.body,
+          date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+        });
+      }
+    })
+    .then(() => {
+      return res.json({
+        msg: `Producto actualizado correctamente`,
       });
-  }
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .json({ error: "Error en el servidor.Inténtelo más tarde." });
+    });
 };

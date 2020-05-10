@@ -65,7 +65,6 @@ export default function SimpleModal({ type, user }) {
     if (id === "name" || id === "lastName" || id === "city") {
       value = value.toLowerCase();
       value = value.replace(/\b\w/g, (l) => l.toUpperCase());
-      console.log(value);
     }
     dispatch({
       type: ADD_USER,
@@ -208,7 +207,6 @@ export default function SimpleModal({ type, user }) {
           }}
           error={error.name}
           helperText={helperText.name}
-          style={{ textTransform: "capitalize" }}
         />
         <TextField
           id="lastName"

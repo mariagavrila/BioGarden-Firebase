@@ -7,7 +7,12 @@ app.use(cors({ origin: true }));
 
 const FBAuth = require("./util/FBAuth");
 
-const { getAllProducts, postOneProduct } = require("./handlers/products");
+const {
+  getAllProducts,
+  postOneProduct,
+  deleteProduct,
+  updateProduct,
+} = require("./handlers/products");
 const {
   login,
   getUser,
@@ -20,6 +25,8 @@ const {
 //Rutas de producto
 app.get("/mercado", getAllProducts);
 app.post("/mercado", postOneProduct);
+app.post("/deleteProduct/:productId", deleteProduct);
+app.post("/updateProduct/:productId", updateProduct);
 
 // Rutas de usuario
 app.post("/login", login);

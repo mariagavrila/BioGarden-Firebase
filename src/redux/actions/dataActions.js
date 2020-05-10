@@ -5,6 +5,9 @@ import {
   ADDING_PRODUCT,
   PRODUCT_ADDED,
   FAIL_ADD_PRODUCT,
+  DELETING_PRODUCT,
+  PRODUCT_DELETED,
+  FAIL_DELETE_PRODUCT,
 } from "../types";
 import axios from "axios";
 
@@ -35,9 +38,9 @@ export const addNewProduct = (data) => (dispatch) => {
     .post(`${proxy}/mercado`, data)
     .then((res) => {
       dispatch({ type: PRODUCT_ADDED, payload: res.data.msg });
+      dispatch(getProducts());
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
       dispatch({
         type: FAIL_ADD_PRODUCT,
         payload: "Error interno. ¡Inténtelo más tarde!",
@@ -45,17 +48,31 @@ export const addNewProduct = (data) => (dispatch) => {
     });
 };
 // Actualizar un producto
-export const updateProduct = () => (dispatch) => {
-  dispatch({ type: LOADING_PRODUCTS });
+export const updateProduct = (id) => (dispatch) => {
+  dispatch({ type: ADDING_PRODUCT });
   return axios
-    .get(`${proxy}/mercado`)
+    .post(`${proxy}/updateProduct/${id}`)
     .then((res) => {
-      dispatch({ type: SET_PRODUCTS, payload: res.data });
+      dispatch({ type: PRODUCT_ADDED, payload: res.data.msg });
     })
     .catch((err) => {
-      console.log(err);
       dispatch({
-        type: FAIL_PRODUCTS,
+        type: FAIL_ADD_PRODUCT,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
+    });
+};
+// Borrar un producto
+export const deleteProduct = (id) => (dispatch) => {
+  dispatch({ type: DELETING_PRODUCT });
+  return axios
+    .get(`${proxy}/deleteProduct/${id}`)
+    .then((res) => {
+      dispatch({ type: PRODUCT_DELETED, payload: res.data.msg });
+    })
+    .catch((err) => {
+      dispatch({
+        type: FAIL_DELETE_PRODUCT,
         payload: "Error interno. ¡Inténtelo más tarde!",
       });
     });

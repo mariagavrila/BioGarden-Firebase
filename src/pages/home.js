@@ -69,7 +69,9 @@ export default function Home(props) {
     //   }
     // }
     dispatch(getProducts());
-  });
+  }, []);
+  const products = useSelector((state) => state.data.products);
+  console.log(products);
 
   function handleChange(e) {
     setState({

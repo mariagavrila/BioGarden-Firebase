@@ -23,14 +23,15 @@ export default function BuyForm() {
 
   //Productos
   products = useSelector((state) => state.data.products);
-  console.log(products);
   useEffect(() => {});
 
+  //Categorias disponibles
+  let fCategories = useSelector((state) => state.ui.fCategories);
+  let vCategories = useSelector((state) => state.ui.vCategories);
+
   const categoriesProps = {
-    options: products,
-    getOptionLabel: (option) => {
-      if (option.section === section) return option.category;
-    },
+    options: section === "Fruta" ? fCategories : vCategories,
+    getOptionLabel: (option) => option,
   };
   const productoProps = {
     options: products,
