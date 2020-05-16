@@ -103,3 +103,26 @@ exports.updateProduct = (req, res) => {
         .json({ error: "Error en el servidor.Inténtelo más tarde." });
     });
 };
+//Registrar una compra
+exports.checkout = (req, res) => {
+  var batch = db.batch();
+  let d = new Date();
+  req.body.forEach((reg) => {
+    batch.set(db.collection("facturacion").doc(), {
+      ...reg,
+      date: `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`,
+    });
+  });
+  batch
+    .commit()
+    .then(() => {
+      return res.json({
+        msg: "Compra registrada correctamente",
+      });
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .json({ error: "Error en el servidor.Inténtelo más tarde." });
+    });
+};

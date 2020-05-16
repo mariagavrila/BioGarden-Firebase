@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getUsersData } from "../redux/actions/userActions";
 import { getProducts } from "../redux/actions/dataActions";
+import { USERS_LOADED, USER_SELECTED } from "../redux/types";
 //Material UI
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -19,9 +20,10 @@ import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import WarningIcon from "@material-ui/icons/Warning";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import CloseIcon from "@material-ui/icons/Close";
-import PaymentIcon from "@material-ui/icons/Payment";
+import Checkbox from "@material-ui/core/Checkbox";
 //Components
 import Checkout from "../components/checkout";
+import { purple } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
+  cell: {
+    padding: ".2rem",
+  },
 }));
 
 export default function Home(props) {
@@ -57,6 +62,7 @@ export default function Home(props) {
     dni: "",
     nsocio: "",
   });
+  const [rowSelected, setRowSelected] = useState(false);
   const [search, setSearch] = useState(false);
   useEffect(() => {
     //hide table in firefox
@@ -70,8 +76,6 @@ export default function Home(props) {
     // }
     dispatch(getProducts());
   }, []);
-  const products = useSelector((state) => state.data.products);
-  console.log(products);
 
   function handleChange(e) {
     setState({
@@ -82,6 +86,7 @@ export default function Home(props) {
 
   const getUsers = (e) => {
     if (e) e.preventDefault();
+    setRowSelected(false);
     setSearch(true);
     dispatch(
       getUsersData({
@@ -91,6 +96,14 @@ export default function Home(props) {
         nsocio: state.nsocio,
       })
     );
+  };
+  //Configurar el usuario seleccionado
+  const getUser = (socio) => {
+    let s = [];
+    s.push(socio);
+    setRowSelected(true);
+    dispatch({ type: USERS_LOADED, payload: s });
+    dispatch({ type: USER_SELECTED, payload: socio });
   };
   //Usuarios
   const isLoading = useSelector((state) => state.user.loadingUsers);
@@ -126,10 +139,26 @@ export default function Home(props) {
           aria-label="simple table"
           id="filterTable"
         >
-          <TableBody>
+          <TableBody className="tableColor">
             {users.length > 0 && search === true
               ? users.map((row) => (
-                  <TableRow key={row.nsocio}>
+                  <TableRow
+                    key={row.userId}
+                    hover={true}
+                    onClick={(event) =>
+                      getUser({
+                        userId: row.userId,
+                        nombre: row.nombre,
+                        nsocio: row.nsocio,
+                        inscripcion: row.inscripcion,
+                        caducidad: row.caducidad,
+                        estado: row.estado,
+                      })
+                    }
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={rowSelected} />
+                    </TableCell>
                     <TableCell align="center" className={classes.cell}>
                       {row.nombre}
                     </TableCell>
@@ -147,7 +176,7 @@ export default function Home(props) {
                         className={row.estado === "1" ? "show" : "hidden"}
                       />
                       <AssignmentLateIcon
-                        style={{ color: "rgb(255, 196, 0)" }}
+                        style={{ color: "rgb(255, 164, 27)" }}
                         className={row.estado == "2" ? "show" : "hidden"}
                       />
                       <WarningIcon

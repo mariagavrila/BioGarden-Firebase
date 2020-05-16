@@ -8,6 +8,9 @@ import {
   DELETING_PRODUCT,
   PRODUCT_DELETED,
   FAIL_DELETE_PRODUCT,
+  REGISTERING,
+  CHECKOUT_REGISTERED,
+  FAIL_CHECKOUT,
 } from "../types";
 import axios from "axios";
 
@@ -73,6 +76,23 @@ export const deleteProduct = (id) => (dispatch) => {
     .catch((err) => {
       dispatch({
         type: FAIL_DELETE_PRODUCT,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
+    });
+};
+// Borrar un producto
+export const checkout = (data) => (dispatch) => {
+  dispatch({ type: REGISTERING });
+  return axios
+    .post(`${proxy}/checkout/`, data)
+    .then((res) => {
+      console.log(res);
+      dispatch({ type: CHECKOUT_REGISTERED, payload: res.data.msg });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: FAIL_CHECKOUT,
         payload: "Error interno. ¡Inténtelo más tarde!",
       });
     });

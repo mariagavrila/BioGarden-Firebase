@@ -58,7 +58,6 @@ export default function DeleteModal({ id }) {
   const deleting = useSelector((state) => state.user.deleting);
   const deleted = useSelector((state) => state.user.deleted);
   const resDelete = useSelector((state) => state.user.resDelete);
-  console.log(deleted);
   useEffect(() => {
     if (deleted) {
       setTimeout(() => {

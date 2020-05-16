@@ -30,9 +30,9 @@ export const loginUser = (email, password) => (dispatch) => {
   return axios
     .post(`${proxy}/login`, data)
     .then((res) => {
-      setAuthorizationHeader(res.data.token);
       let id = res.data.token;
       if (id) {
+        setAuthorizationHeader(id);
         dispatch({ type: SET_AUTHENTICATED });
         //history.push("/");
       } else {

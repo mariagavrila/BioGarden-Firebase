@@ -51,9 +51,7 @@ exports.getUsers = (req, res) => {
         let lastName = user.lastName !== "" ? user.lastName : doc.lastName;
         let dni = user.dni !== "" ? user.dni : doc.dni;
         let memberNumber =
-          user.memberNumber !== ""
-            ? Number(user.memberNumber)
-            : doc.memberNumber;
+          user.memberNumber !== "" ? user.memberNumber : doc.memberNumber;
 
         //Se meten todos los usuarios que coinciden con la busqueda en un array para ser devueltos
         if (

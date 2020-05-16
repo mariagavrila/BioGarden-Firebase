@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
@@ -6,14 +6,16 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import BuyForm from "./comprar";
 import PaymentForm from "./payment";
 import Review from "./review";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import ShoppingBasketOutlinedIcon from "@material-ui/icons/ShoppingBasketOutlined";
 //Redux
 import { useSelector, useDispatch } from "react-redux";
+import { checkout } from "../redux/actions/dataActions";
+import { CLEAR_CHECKOUT } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -24,12 +26,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 600,
+      width: 800,
       marginLeft: "auto",
       marginRight: "auto",
     },
   },
   paper: {
+    position: "relative",
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
     padding: theme.spacing(2),
@@ -47,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
   },
   button: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
     marginLeft: theme.spacing(1),
   },
 }));
 
-const steps = ["Shipping address", "Payment details", "Review your order"];
+const steps = ["Productos comprados", "Facturación", "Revisar pedido"];
 
 function getStepContent(step) {
   switch (step) {
@@ -69,12 +72,57 @@ function getStepContent(step) {
 
 export default function Checkout() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
   const [activeStep, setActiveStep] = React.useState(0);
+  const [error, setError] = React.useState({
+    cart: "",
+    socio: "",
+  });
 
   const isLoading = useSelector((state) => state.data.isLoading);
+  const products = useSelector((state) => state.data.checkProducts);
+  const user = useSelector((state) => state.user.userSelected);
+  const cart = useSelector((state) => state.data.checkProducts.length);
+  //Registrar la compra
+  const isRegistering = useSelector((state) => state.data.isRegistering);
+  const registerMsg = useSelector((state) => state.data.checkoutRegistered);
+  const failRegister = useSelector((state) => state.data.failCheckout);
+
+  useEffect(() => {
+    console.log("useeffect");
+    if (!failRegister && registerMsg !== "")
+      setTimeout(() => {
+        dispatch({ type: CLEAR_CHECKOUT });
+        setActiveStep(1);
+      }, 3000);
+  });
 
   const handleNext = () => {
-    setActiveStep(activeStep + 1);
+    if (activeStep === steps.length - 1) {
+      if (cart === 0) {
+        setError({ ...error, cart: "¡La cesta de productos está vacía!" });
+        return;
+      }
+      if (!user.nombre) {
+        setError({ ...error, socio: "¡Selecciona una socio!" });
+        return;
+      }
+      let data = [];
+      products.forEach((p) => {
+        data.push({
+          ...p,
+          partner: user.nombre,
+          memberNumber: user.nsocio,
+          id: user.userId,
+        });
+      });
+      console.log(data);
+      dispatch(checkout(data));
+    } else {
+      setActiveStep(activeStep + 1);
+      setError({ ...error, socio: "", cart: "" });
+    }
   };
 
   const handleBack = () => {
@@ -92,6 +140,12 @@ export default function Checkout() {
           <Typography component="h1" variant="h4" align="center">
             Registrar Compra
           </Typography>
+          <Button
+            style={{ position: "absolute", right: "1rem", top: "0" }}
+            endIcon={<ShoppingBasketOutlinedIcon style={{ fontSize: 27 }} />}
+          >
+            <h2>{cart}</h2>
+          </Button>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map((label) => (
               <Step key={label}>
@@ -100,37 +154,43 @@ export default function Checkout() {
             ))}
           </Stepper>
           <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
-                </Typography>
-                <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? "Place order" : "Next"}
-                  </Button>
+            <React.Fragment>
+              {getStepContent(activeStep)}
+              {cart === 0 && error.cart !== "" ? (
+                <div className="invalidForm">{error.cart}</div>
+              ) : null}
+              {!user.nombre && error.socio !== "" ? (
+                <div className="invalidForm">{error.socio}</div>
+              ) : null}
+              {isRegistering ? (
+                <LinearProgress
+                  color="primary"
+                  style={{ marginBottom: "1rem" }}
+                />
+              ) : null}
+              {registerMsg !== "" ? (
+                <div className={!failRegister ? "validForm" : "invalidForm"}>
+                  {registerMsg}
                 </div>
-              </React.Fragment>
-            )}
+              ) : null}
+              <div className={classes.buttons}>
+                {activeStep !== 0 && (
+                  <Button onClick={handleBack} className={classes.button}>
+                    Volver
+                  </Button>
+                )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  className={classes.button}
+                >
+                  {activeStep === steps.length - 1
+                    ? "Registrar compra"
+                    : "Siguiente"}
+                </Button>
+              </div>
+            </React.Fragment>
           </React.Fragment>
         </Paper>
       </main>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
+//Material UI
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -11,13 +12,13 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import ViewListIcon from "@material-ui/icons/ViewList";
 import SettingsIcon from "@material-ui/icons/Settings";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 import GroupIcon from "@material-ui/icons/Group";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
+//Redux
 import { useSelector } from "react-redux";
 
 const drawerWidth = 280;

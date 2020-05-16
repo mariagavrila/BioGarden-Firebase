@@ -12,6 +12,11 @@ import {
   PRODUCT_DELETED,
   FAIL_DELETE_PRODUCT,
   CLEAR_PRODUCT,
+  FILL_CHECK_PRODUCTS,
+  REGISTERING,
+  CHECKOUT_REGISTERED,
+  FAIL_CHECKOUT,
+  CLEAR_CHECKOUT,
 } from "../types";
 
 const initialState = {
@@ -24,6 +29,10 @@ const initialState = {
   isDeleting: false,
   msgDelete: "",
   failDelete: false,
+  checkProducts: [],
+  isRegistering: false,
+  checkoutRegistered: "",
+  failCheckout: false,
 };
 
 export default function (state = initialState, action) {
@@ -89,6 +98,37 @@ export default function (state = initialState, action) {
       return {
         ...state,
         msgAdd: "",
+      };
+    case FILL_CHECK_PRODUCTS:
+      state.checkProducts.push(action.payload);
+      return {
+        ...state,
+      };
+    case REGISTERING:
+      return {
+        ...state,
+        failCheckout: false,
+        isRegistering: true,
+      };
+    case CHECKOUT_REGISTERED:
+      return {
+        ...state,
+        failCheckout: false,
+        isRegistering: false,
+        checkoutRegistered: action.payload,
+      };
+    case FAIL_CHECKOUT:
+      return {
+        ...state,
+        failCheckout: true,
+        isRegistering: false,
+        checkoutRegistered: action.payload,
+      };
+    case CLEAR_CHECKOUT:
+      return {
+        ...state,
+        checkoutRegistered: "",
+        checkProducts: [],
       };
     default:
       return state;

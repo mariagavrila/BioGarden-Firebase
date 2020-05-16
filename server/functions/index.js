@@ -12,6 +12,7 @@ const {
   postOneProduct,
   deleteProduct,
   updateProduct,
+  checkout,
 } = require("./handlers/products");
 const {
   login,
@@ -27,6 +28,7 @@ app.get("/mercado", getAllProducts);
 app.post("/mercado", postOneProduct);
 app.post("/deleteProduct/:productId", deleteProduct);
 app.post("/updateProduct/:productId", updateProduct);
+app.post("/checkout", checkout);
 
 // Rutas de usuario
 app.post("/login", login);

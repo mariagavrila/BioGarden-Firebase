@@ -29,16 +29,10 @@ import axios from "axios";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: "#6abf69",
-      main: "#388e3c",
-      dark: "#00600f",
-      contrastText: "#000000",
+      main: "#2e7d32",
     },
     secondary: {
-      light: "#d05ce3",
-      main: "#9c27b0",
-      dark: "#6a0080",
-      contrastText: "#ffffff",
+      main: "rgb(174, 119, 199)",
     },
   },
 });

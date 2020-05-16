@@ -19,6 +19,7 @@ import {
   FAIL_DATA,
   ADD_USER,
   CLEAR_USER,
+  USER_SELECTED,
 } from "../types";
 
 const initialState = {
@@ -63,6 +64,7 @@ const initialState = {
     observation: "",
   },
   failData: "",
+  userSelected: {},
 };
 
 export default function (state = initialState, action) {
@@ -194,6 +196,11 @@ export default function (state = initialState, action) {
         },
         deleted: false,
         resDelete: "",
+      };
+    case USER_SELECTED:
+      return {
+        ...state,
+        userSelected: action.payload,
       };
     default:
       return { ...state };

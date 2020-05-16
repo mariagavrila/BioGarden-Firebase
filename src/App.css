@@ -25,11 +25,17 @@ a {
 .show {
   display: inline-block;
 }
+/* tables */
+.tableColorr {
+  background-color: rgb(255, 164, 27);
+  background-color: rgb(174, 119, 199);
+}
+
 #tablePrincipal {
   max-width: 90%;
   max-height: 50vh;
+  background: #7d4c2234;
   overflow-y: scroll;
-  background: rgba(224, 224, 217, 0.61);
   scrollbar-color: #388e3c white;
   scrollbar-width: thin;
 }

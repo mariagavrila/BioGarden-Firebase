@@ -95,6 +95,7 @@ export default function Login(props) {
   };
 
   const handleSubmit = (e) => {
+    console.log(state);
     e.preventDefault();
     if (validateEmail() && validatePassword()) {
       dispatch(loginUser(email, password));

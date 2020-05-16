@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import "./styles/socios.css";
 import DeleteModal from "../components/confirmDelete";
+import NumberFormatCustom from "../components/numberFormat";
 //Material UI
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
@@ -13,10 +13,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
-import WarningIcon from "@material-ui/icons/Warning";
-import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
-import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import TableHead from "@material-ui/core/TableHead";
 import TableFooter from "@material-ui/core/TableFooter";
@@ -37,7 +33,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
-import NumberFormat from "react-number-format";
 import Divider from "@material-ui/core/Divider";
 import EditIcon from "@material-ui/icons/Edit";
 import DoneIcon from "@material-ui/icons/Done";
@@ -105,6 +100,7 @@ export default function Productos(props) {
     stock: "",
     unit: "Kg",
   });
+
   const [error, setError] = useState({
     category: false,
     name: false,
@@ -127,6 +123,7 @@ export default function Productos(props) {
   }, []);
   //Guardar los datos cambiados en los inputs
   function handleChange(e) {
+    console.log("llamando handle change");
     let id = e.target.id;
     let value = e.target.value;
     //Transformar en formato correcto el nombre del producto
@@ -178,19 +175,20 @@ export default function Productos(props) {
   const validateProduct = () => {
     //Validar en nombre
     if (newProduct.name === "") {
-      console.log(newProduct, "llamada desde validate");
-      setError({ ...error, name: true }); //identica miarma
+      setError({ ...error, name: true });
     } else setError({ ...error, name: false });
 
     //Validar el precio
-    if (newProduct.price === "") setError({ ...error, price: true });
-    else setError({ ...error, price: false });
+    if (newProduct.price === "") {
+      console.log("validar precio");
+
+      setError({ ...error, price: true });
+    } else setError({ ...error, price: false });
 
     //Validar la categoria
     if (newProduct.category === "") setError({ ...error, category: true });
     else setError({ ...error, category: false });
   };
-  //vida mira esto
   //Añadir el producto a la bbdd
   const addProduct = (e) => {
     if (e) e.preventDefault();
@@ -624,25 +622,5 @@ function TablePaginationActions(props) {
         {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
-  );
-}
-function NumberFormatCustom(props) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      isNumericString
-    />
   );
 }

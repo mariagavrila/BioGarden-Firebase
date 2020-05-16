@@ -5,27 +5,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Grid from "@material-ui/core/Grid";
-
-const products = [
-  { name: "Product 1", desc: "A nice thing", price: "$9.99" },
-  { name: "Product 2", desc: "Another thing", price: "$3.45" },
-  { name: "Product 3", desc: "Something else", price: "$6.51" },
-  { name: "Product 4", desc: "Best thing of all", price: "$14.11" },
-  { name: "Shipping", desc: "", price: "Free" },
-];
-const addresses = [
-  "1 Material-UI Drive",
-  "Reactville",
-  "Anytown",
-  "99999",
-  "USA",
-];
-const payments = [
-  { name: "Card type", detail: "Visa" },
-  { name: "Card holder", detail: "Mr John Smith" },
-  { name: "Card number", detail: "xxxx-xxxx-xxxx-1234" },
-  { name: "Expiry date", detail: "04/2024" },
-];
+//Redux
+import { useSelector, useDispatch } from "react-redux";
+import { FILL_CHECK_PRODUCTS } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -42,10 +24,25 @@ const useStyles = makeStyles((theme) => ({
 export default function Review() {
   const classes = useStyles();
 
+  const user = useSelector((state) => state.user.userSelected);
+
+  const products = [];
+  let total = 0;
+  const cart = useSelector((state) => state.data.checkProducts);
+  cart.forEach((p) => {
+    let product = {
+      name: p.name,
+      desc: `${p.stock} ${p.unit}`,
+      price: `${p.total} €`,
+    };
+    total += p.total;
+    products.push(product);
+  });
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Order summary
+        Resumen compra
       </Typography>
       <List disablePadding>
         {products.map((product) => (
@@ -57,34 +54,21 @@ export default function Review() {
         <ListItem className={classes.listItem}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" className={classes.total}>
-            $34.06
+            {total} €
           </Typography>
         </ListItem>
       </List>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
+            Socio
           </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(", ")}</Typography>
         </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
+        <Grid item xs={12} sm={6} style={{ textAlign: "right" }}>
+          <Typography gutterBottom style={{ marginTop: "2rem" }}>
+            {user.nombre}
           </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
-          </Grid>
+          <Typography gutterBottom>N° socio: {user.nsocio}</Typography>
         </Grid>
       </Grid>
     </React.Fragment>
