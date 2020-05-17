@@ -1,7 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import "./components.css";
+//Material UI
 import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import CloseIcon from "@material-ui/icons/Close";
 import Table from "@material-ui/core/Table";
@@ -12,10 +14,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import "./components.css";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import ListAltIcon from "@material-ui/icons/ListAlt";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 //Redux
 import { getUserData } from "../redux/actions/userActions";
+import { getRegisters } from "../redux/actions/dataActions";
 import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
     height: "25vh",
+  },
+  observation: {
+    padding: theme.spacing(0),
+    textAlign: "right",
+    height: "26vh",
+    padding: ".5rem",
   },
 }));
 
@@ -84,103 +95,142 @@ export default function Usuario(props) {
   const dispatch = useDispatch();
   let id = props.location.search.split("=")[1];
 
-  const [state, setState] = useState({
-    name: "",
-    lastName: "",
-    dni: "",
-    consum: "",
-    startInsc: "",
-    endInsc: "",
-  });
-
   useEffect(() => {
     dispatch(getUserData(id));
+    dispatch(getRegisters(id));
   }, []);
+  //Datos del usuario
+  const isLoading = useSelector((state) => state.user.dataLoading);
+  const data = useSelector((state) => state.user.userData);
+  const failData = useSelector((state) => state.user.failData);
+  //Datos de transacciones
+  const loadingRegisters = useSelector((state) => state.data.loadingRegisters);
+  const registers = useSelector((state) => state.data.setRegisters);
+  const failRegisters = useSelector((state) => state.data.failRegisters);
+
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <Grid container spacing={1}>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>
-            <h4 className="rightText">{`Socio N° ${id}`}</h4>
-            <h6 className="userData capitalize">{`${state.name} ${state.lastName}`}</h6>
-            <hr style={{ border: ".5px dotted", marginTop: 0 }} />
-            <h6 className="userData">{`DNI ${state.dni}`}</h6>
-            <h6 className="userData">{`Socio ${state.consum}`}</h6>
-            <h6 className="userData">{`Inscripción ${state.startInsc}`}</h6>
-            <h6 className="userData">{`Caducidad ${state.endInsc}`}</h6>
-          </Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper className={classes.paper}>
-            <Grid container spacing={1}>
-              <Grid item xs={8}>
-                <p className="grConsum">0gr consumidos / 15.00gr dia</p>
-                <p className="grConsum">0gr consumidos / 15.00gr dia</p>
-                <Button variant="outlined" color="dark" className="buttonCart">
-                  <AccountBalanceWalletIcon color="primary" fontSize="large" />
-                  <p className="insideButton">
-                    Saldo <br />
-                    0Crd
-                  </p>
-                </Button>
-              </Grid>
-              <Grid item xs={4}>
-                <img src={require("../images/scales.png")} id="scales"></img>
-              </Grid>
+      {isLoading || loadingRegisters ? (
+        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+      ) : null}
+      {!isLoading &&
+      !loadingRegisters &&
+      (failData !== "" || failRegisters !== "") ? (
+        <div className="noUser">{failData || failRegisters}</div>
+      ) : null}
+      {failData === "" && failRegisters === "" ? (
+        <div className={isLoading || loadingRegisters ? "loading" : null}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <Paper className={classes.paper}>
+                <h4 className="rightText">{`Socio N° ${data.memberNumber}`}</h4>
+                <h6 className="title">{`${data.name} ${data.lastName}`}</h6>
+                <hr style={{ border: ".5px dotted", marginTop: 0 }} />
+                <h6 className="userData">{`DNI ${data.dni}`}</h6>
+                <h6 className="userData">{`Inscripción ${data.startInscriptionDate}`}</h6>
+                <h6 className="userData">{`Caducidad ${data.endInscriptionDate}`}</h6>
+              </Paper>
             </Grid>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper} id="alertUser">
-            Este socio tiene su tarjeta caducada desde el 12/02/2020
-          </Paper>
-        </Grid>
-      </Grid>
-      <TableContainer
-        component={Paper}
-        style={{
-          marginTop: "1.8rem",
-          background: "rgba(143, 115, 49, 0.253)",
-        }}
-      >
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead className="tablaHistorial">
-            <TableRow>
-              <TableCell
-                align="center"
-                style={{ fontSize: "2rem" }}
-                colSpan={12}
-              >
-                <ListAltIcon
-                  color="action"
-                  fontSize="large"
-                  className="floatLeft"
+            <Grid item xs={6}>
+              <Paper className={classes.paper}>
+                <Grid container spacing={1}>
+                  <Grid item xs={8}>
+                    <p className="grConsum">0gr consumidos / 15.00gr dia</p>
+                    <p className="grConsum">0gr consumidos / 15.00gr dia</p>
+                    <Button variant="outlined" className="buttonCart">
+                      <AccountBalanceWalletIcon
+                        color="primary"
+                        fontSize="large"
+                      />
+                      <p className="insideButton">
+                        Saldo <br />
+                        0Crd
+                      </p>
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <img
+                      src={require("../images/scales.png")}
+                      id="scales"
+                    ></img>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.paper} id="expired">
+                Este socio tiene su tarjeta caducada desde el 12/02/2020
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.observation} elevation={3}>
+                <TextField
+                  id="observation"
+                  label="Comentario"
+                  variant="outlined"
+                  multiline
+                  rows={3}
+                  fullWidth
+                  style={{ margin: ".5rem 0 .5rem .5rem", width: "98%" }}
+                  defaultValue="Comentario..."
                 />
-                Historial del usuario
-                <Button
-                  variant="contained"
-                  color="light"
-                  className="floatRight"
-                >
-                  Publicar Comentario
+                <Button variant="contained" color="primary">
+                  Publicar
                 </Button>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.fecha}>
-                <TableCell align="right">{row.fecha}</TableCell>
-                <TableCell align="right">{row.comentario}</TableCell>
-                <TableCell align="right">
-                  <CloseIcon style={{ color: "red" }} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              </Paper>
+            </Grid>
+          </Grid>
+          <TableContainer
+            component={Paper}
+            style={{
+              marginTop: "1.8rem",
+              background: "rgba(143, 115, 49, 0.253)",
+            }}
+          >
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead className="tablaHistorial">
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    style={{ fontSize: "2rem" }}
+                    colSpan={12}
+                  >
+                    <ListAltIcon
+                      color="action"
+                      fontSize="large"
+                      className="floatLeft"
+                    />
+                    Historial del usuario
+                    <Button
+                      variant="contained"
+                      color="light"
+                      className="floatRight"
+                    >
+                      Publicar Comentario
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {registers.length > 0
+                  ? registers.map((row) => (
+                      <TableRow key={row.idRegister}>
+                        <TableCell align="right">{row.date}</TableCell>
+                        <TableCell align="right">{row.section}</TableCell>
+                        <TableCell align="right">{row.name}</TableCell>
+                        <TableCell align="right">{`${row.stock} ${row.unit}`}</TableCell>
+                        <TableCell align="right">
+                          <CloseIcon style={{ color: "red" }} />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  : null}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      ) : null}
     </main>
   );
 }

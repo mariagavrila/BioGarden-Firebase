@@ -30,14 +30,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    marginTop: "2rem",
+    marginBottom: "1rem",
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -119,10 +117,19 @@ export default function Login(props) {
   if (state.password != "") state.passwordError = "";
 
   return (
-    <main className={classes.content}>
+    <main className={classes.content} id="login">
       {authenticated ? <Redirect to="/" /> : null}
       <div className={classes.toolbar} />
-      <Container component="main" maxWidth="xs">
+      <Container
+        component="main"
+        maxWidth="xs"
+        style={{
+          background: " #ffffff3a",
+          borderRadius: "15px",
+          border: "2px solid #73AD21",
+          marginTop: "6rem",
+        }}
+      >
         <CssBaseline />
         <div className={classes.paper}>
           <Typography component="h1" variant="h3" style={boldText}>

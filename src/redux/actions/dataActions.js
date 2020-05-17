@@ -11,6 +11,9 @@ import {
   REGISTERING,
   CHECKOUT_REGISTERED,
   FAIL_CHECKOUT,
+  LOADING_REGISTERS,
+  SET_REGISTERS,
+  FAIL_REGISTERS,
 } from "../types";
 import axios from "axios";
 
@@ -80,7 +83,7 @@ export const deleteProduct = (id) => (dispatch) => {
       });
     });
 };
-// Borrar un producto
+// Registrar una compra
 export const checkout = (data) => (dispatch) => {
   dispatch({ type: REGISTERING });
   return axios
@@ -93,6 +96,26 @@ export const checkout = (data) => (dispatch) => {
       console.log(err);
       dispatch({
         type: FAIL_CHECKOUT,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
+    });
+};
+// Obtener los registros de compras
+export const getRegisters = (id) => (dispatch) => {
+  dispatch({ type: LOADING_REGISTERS });
+  //Si existe un id se devuelven los registros del socio, sino todos los registros
+  let url;
+  if (id) url = `${proxy}/history/${id}`;
+  else url = `${proxy}/history`;
+  return axios
+    .get(url)
+    .then((res) => {
+      dispatch({ type: SET_REGISTERS, payload: res.data.data });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: FAIL_REGISTERS,
         payload: "Error interno. ¡Inténtelo más tarde!",
       });
     });

@@ -13,7 +13,26 @@
   line-height: normal;
   font-weight: bold;
 }
-#alertUser {
+/* Estados del socio */
+
+#expired {
+  background: #db5a40d8;
+  height: 10vh;
+  font-size: 1.2rem;
+}
+.dataMissing {
+  background: #db5a40d8;
+  /* background: rgba(255, 72, 0, 0.781); */
+  height: 10vh;
+  font-size: 1.2rem;
+}
+.upToDate {
+  background: #db5a40d8;
+  /* background: rgba(255, 72, 0, 0.781); */
+  height: 10vh;
+  font-size: 1.2rem;
+}
+.outdated {
   background: #db5a40d8;
   /* background: rgba(255, 72, 0, 0.781); */
   height: 10vh;
@@ -31,15 +50,18 @@
 }
 .userData {
   color: rgba(0, 0, 0, 0.712);
-  margin: 0;
+  margin: 0.5rem 0 0 0;
   font-size: 0.8rem;
 }
 .rightText {
   text-align: right;
   margin: 0;
 }
-.capitalize {
-  text-transform: capitalize;
+.title {
+  color: rgba(0, 0, 0, 0.712);
+  margin: 0.5rem 0 0 0;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 .validForm {
   color: green;

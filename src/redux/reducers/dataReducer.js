@@ -17,6 +17,9 @@ import {
   CHECKOUT_REGISTERED,
   FAIL_CHECKOUT,
   CLEAR_CHECKOUT,
+  LOADING_REGISTERS,
+  SET_REGISTERS,
+  FAIL_REGISTERS,
 } from "../types";
 
 const initialState = {
@@ -33,6 +36,9 @@ const initialState = {
   isRegistering: false,
   checkoutRegistered: "",
   failCheckout: false,
+  loadingRegisters: false,
+  setRegisters: [],
+  failRegisters: "",
 };
 
 export default function (state = initialState, action) {
@@ -129,6 +135,28 @@ export default function (state = initialState, action) {
         ...state,
         checkoutRegistered: "",
         checkProducts: [],
+      };
+    case LOADING_REGISTERS:
+      return {
+        ...state,
+        loadingRegisters: true,
+        failRegisters: "",
+        setRegisters: [],
+      };
+    case SET_REGISTERS:
+      return {
+        ...state,
+        loadingRegisters: false,
+        failRegisters: "",
+        setRegisters: action.payload,
+      };
+    case FAIL_REGISTERS:
+      console.log("failRegisters");
+      return {
+        ...state,
+        loadingRegisters: false,
+        failRegisters: action.payload,
+        setRegisters: [],
       };
     default:
       return state;

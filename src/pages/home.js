@@ -21,9 +21,14 @@ import WarningIcon from "@material-ui/icons/Warning";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import CloseIcon from "@material-ui/icons/Close";
 import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
 //Components
 import Checkout from "../components/checkout";
-import { purple } from "@material-ui/core/colors";
+
+import "./styles/home.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +36,22 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: 200,
     },
+  },
+  card: {
+    display: "flex",
+    background: "rgb(56, 28, 56)",
+    marginTop: ".5rem",
+    padding: "0",
+  },
+  details: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  content: {
+    flex: "1 0 auto",
+  },
+  cover: {
+    width: 410,
   },
   toolbar: {
     display: "flex",
@@ -113,108 +134,124 @@ export default function Home(props) {
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-
-      <form
-        className={classes.root}
-        noValidate
-        autoComplete="off"
-        onSubmit={getUsers}
-        id="filterForm"
-      >
-        <TextField id="nombre" onChange={handleChange} label="Nombre" />
-        <TextField id="apellido" onChange={handleChange} label="Apellido" />
-        <TextField id="dni" onChange={handleChange} label="DNI" />
-        <TextField id="nsocio" onChange={handleChange} label="N° Socio" />
-        <Button type="submit" variant="outlined" color="primary" value="Submit">
-          Buscar
-        </Button>
-      </form>
-      {isLoading ? (
-        <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
-      ) : null}
-
-      <TableContainer component={Paper} id="tablePrincipal">
-        <Table
-          className={classes.table}
-          aria-label="simple table"
-          id="filterTable"
+      <div className="align-center">
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={getUsers}
+          id="filterForm"
         >
-          <TableBody className="tableColor">
-            {users.length > 0 && search === true
-              ? users.map((row) => (
-                  <TableRow
-                    key={row.userId}
-                    hover={true}
-                    onClick={(event) =>
-                      getUser({
-                        userId: row.userId,
-                        nombre: row.nombre,
-                        nsocio: row.nsocio,
-                        inscripcion: row.inscripcion,
-                        caducidad: row.caducidad,
-                        estado: row.estado,
-                      })
-                    }
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={rowSelected} />
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      {row.nombre}
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      N° {row.nsocio}
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <span>{row.inscripcion}</span>
-                      <br />
-                      <span style={{ color: "red" }}>{row.caducidad}</span>
-                    </TableCell>
-                    <TableCell align="center">
-                      <DoneOutlineIcon
-                        color="primary"
-                        className={row.estado === "1" ? "show" : "hidden"}
-                      />
-                      <AssignmentLateIcon
-                        style={{ color: "rgb(255, 164, 27)" }}
-                        className={row.estado == "2" ? "show" : "hidden"}
-                      />
-                      <WarningIcon
-                        style={{ color: "rgb(255, 72, 0)" }}
-                        className={row.estado == "3" ? "show" : "hidden"}
-                      />
-                      <CloseIcon
-                        style={{ color: "red" }}
-                        className={row.estado == "4" ? "show" : "hidden"}
-                      />
-                    </TableCell>
-                    <TableCell align="center" className={classes.cell}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ color: "white" }}
-                        onClick={(e) =>
-                          history.push(`/usuario?id=${row.userId}`)
-                        }
-                      >
-                        Acceder
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {users.length === 0 && search === true && isLoading === false ? (
-        <div className="noUser">
-          {alert != ""
-            ? alert
-            : "No hay resultados que coincidan con la busqueda."}
+          <TextField id="nombre" onChange={handleChange} label="Nombre" />
+          <TextField id="apellido" onChange={handleChange} label="Apellido" />
+          <TextField id="dni" onChange={handleChange} label="DNI" />
+          <TextField id="nsocio" onChange={handleChange} label="N° Socio" />
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            value="Submit"
+          >
+            Buscar
+          </Button>
+        </form>
+        {isLoading ? (
+          <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
+        ) : null}
+
+        <TableContainer component={Paper} id="tablePrincipal">
+          <Table
+            className={classes.table}
+            aria-label="simple table"
+            id="filterTable"
+          >
+            <TableBody className="tableColor">
+              {users.length > 0 && search === true
+                ? users.map((row) => (
+                    <TableRow
+                      key={row.userId}
+                      hover={true}
+                      onClick={(event) =>
+                        getUser({
+                          userId: row.userId,
+                          nombre: row.nombre,
+                          nsocio: row.nsocio,
+                          inscripcion: row.inscripcion,
+                          caducidad: row.caducidad,
+                          estado: row.estado,
+                        })
+                      }
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox checked={rowSelected} />
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        {row.nombre}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        N° {row.nsocio}
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <span>{row.inscripcion}</span>
+                        <br />
+                        <span style={{ color: "red" }}>{row.caducidad}</span>
+                      </TableCell>
+                      <TableCell align="center">
+                        <DoneOutlineIcon
+                          color="primary"
+                          className={row.estado === "1" ? "show" : "hidden"}
+                        />
+                        <AssignmentLateIcon
+                          style={{ color: "rgb(255, 164, 27)" }}
+                          className={row.estado == "2" ? "show" : "hidden"}
+                        />
+                        <WarningIcon
+                          style={{ color: "rgb(255, 72, 0)" }}
+                          className={row.estado == "3" ? "show" : "hidden"}
+                        />
+                        <CloseIcon
+                          style={{ color: "red" }}
+                          className={row.estado == "4" ? "show" : "hidden"}
+                        />
+                      </TableCell>
+                      <TableCell align="center" className={classes.cell}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ color: "white" }}
+                          onClick={(e) =>
+                            history.push(`/usuario?id=${row.userId}`)
+                          }
+                        >
+                          Historial
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : null}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {users.length === 0 && search === true && isLoading === false ? (
+          <div className="noUser">
+            {alert != ""
+              ? alert
+              : "No hay resultados que coincidan con la busqueda."}
+          </div>
+        ) : null}
+      </div>
+      <Card className={classes.card}>
+        <div className={classes.details}>
+          <CardContent className={classes.content} style={{ padding: "5px" }}>
+            <Checkout />
+          </CardContent>
         </div>
-      ) : null}
-      <Checkout />
+        <CardMedia
+          className={classes.cover}
+          image={require("../images/redfruits.jpg")}
+        />
+      </Card>
     </main>
   );
 }

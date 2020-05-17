@@ -78,7 +78,11 @@ export const getUserData = (id) => (dispatch) => {
       dispatch({ type: DATA_LOADED, payload: res.data });
     })
     .catch((err) => {
-      dispatch({ type: DATA_LOADED, payload: err });
+      console.log(err);
+      dispatch({
+        type: FAIL_DATA,
+        payload: "Error interno. ¡Inténtelo más tarde!",
+      });
     });
 };
 // Añadir o actualizar un usuario

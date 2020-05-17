@@ -23,18 +23,17 @@ const useStyles = makeStyles((theme) => ({
   },
   layout: {
     width: "auto",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    marginLeft: theme.spacing(0),
+    marginRight: theme.spacing(0),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 800,
-      marginLeft: "auto",
-      marginRight: "auto",
+      width: 750,
+      marginLeft: "0",
     },
   },
   paper: {
     position: "relative",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(0),
+    marginBottom: theme.spacing(0),
     padding: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
       marginTop: theme.spacing(6),
@@ -133,7 +132,7 @@ export default function Checkout() {
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paper} style={{ margin: "0" }}>
           {isLoading ? (
             <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
           ) : null}
