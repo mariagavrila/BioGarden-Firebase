@@ -54,12 +54,15 @@ export const addNewProduct = (data) => (dispatch) => {
     });
 };
 // Actualizar un producto
-export const updateProduct = (id) => (dispatch) => {
+export const updateProduct = (id, data) => (dispatch) => {
   dispatch({ type: ADDING_PRODUCT });
   return axios
-    .post(`${proxy}/updateProduct/${id}`)
+    .post(`${proxy}/updateProduct/${id}`, data)
     .then((res) => {
       dispatch({ type: PRODUCT_ADDED, payload: res.data.msg });
+      setTimeout(() => {
+        dispatch(getProducts());
+      }, 2000);
     })
     .catch((err) => {
       dispatch({
@@ -72,9 +75,12 @@ export const updateProduct = (id) => (dispatch) => {
 export const deleteProduct = (id) => (dispatch) => {
   dispatch({ type: DELETING_PRODUCT });
   return axios
-    .get(`${proxy}/deleteProduct/${id}`)
+    .post(`${proxy}/deleteProduct/${id}`)
     .then((res) => {
-      dispatch({ type: PRODUCT_DELETED, payload: res.data.msg });
+      dispatch({ type: PRODUCT_DELETED, payload: res.data.message });
+      setTimeout(() => {
+        dispatch(getProducts());
+      }, 2000);
     })
     .catch((err) => {
       dispatch({

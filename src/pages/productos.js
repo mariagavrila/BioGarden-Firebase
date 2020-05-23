@@ -35,14 +35,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Divider from "@material-ui/core/Divider";
 import EditIcon from "@material-ui/icons/Edit";
-import DoneIcon from "@material-ui/icons/Done";
 //Redux
 import {
   addNewProduct,
   getProducts,
   updateProduct,
 } from "../redux/actions/dataActions";
-import { CLEAR_PRODUCT, PRODUCT_ADDED } from "../redux/types";
+import { CLEAR_PRODUCT } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: "50ch",
   },
+  container: {
+    border: "2px solid rgb(56, 28, 56)",
+  },
 }));
 
 export default function Productos(props) {
@@ -94,7 +96,7 @@ export default function Productos(props) {
 
   const [newProduct, setNewProduct] = useState({
     section: "Fruta",
-    category: "",
+    category: null,
     name: "",
     price: "",
     stock: "",
@@ -136,7 +138,7 @@ export default function Productos(props) {
       [id]: value,
     });
     setError({
-      ...newProduct,
+      ...error,
       [id]: false,
     });
   }
@@ -150,7 +152,7 @@ export default function Productos(props) {
       [name]: value,
     });
     setError({
-      ...newProduct,
+      ...error,
       [name]: false,
     });
   }
@@ -201,9 +203,8 @@ export default function Productos(props) {
     )
       return;
     else {
-      console.log("entra");
       if (!edit) dispatch(addNewProduct(newProduct));
-      else dispatch(updateProduct(newProduct.id));
+      else dispatch(updateProduct(newProduct.id, newProduct));
 
       setNewProduct({
         section: "Fruta",
@@ -359,7 +360,7 @@ export default function Productos(props) {
                 <RadioGroup
                   row
                   name="unit"
-                  defaultValue={newProduct.unit}
+                  value={newProduct.unit}
                   onChange={handleRadio}
                 >
                   <FormControlLabel
@@ -424,7 +425,7 @@ export default function Productos(props) {
         <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
       ) : null}
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className={classes.container}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
@@ -449,7 +450,7 @@ export default function Productos(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableHead>
+          <TableHead style={{ background: "rgba(111, 162, 114, 0.534)" }}>
             <TableRow>
               <TableCell align="center" className={classes.header}>
                 Editar
@@ -480,7 +481,7 @@ export default function Productos(props) {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody style={{ background: "rgba(143, 115, 49, 0.253)" }}>
             {products.length > 0
               ? products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -514,7 +515,7 @@ export default function Productos(props) {
                         {row.date}
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
-                        <DeleteModal id={row.userId} />
+                        <DeleteModal id={row.id} target="producto" />
                       </TableCell>
                     </TableRow>
                   ))
@@ -531,7 +532,7 @@ export default function Productos(props) {
                     25,
                     { label: "Todos", value: -1 },
                   ]}
-                  colSpan={3}
+                  colSpan={6}
                   count={products.length}
                   rowsPerPage={rowsPerPage}
                   page={page}

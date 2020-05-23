@@ -1,5 +1,9 @@
 import React from "react";
-import AppBar from "@material-ui/core/AppBar";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -7,22 +11,20 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import StarIcon from "@material-ui/icons/StarBorder";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
+//Redux
+import { useSelector, useDispatch } from "react-redux";
+import { FILL_CHECK_PRODUCTS } from "../redux/types";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
+      <Link color="inherit">BioGarden</Link> {new Date().getFullYear()}
       {"."}
     </Typography>
   );
@@ -36,20 +38,22 @@ const useStyles = makeStyles((theme) => ({
       listStyle: "none",
     },
   },
-  appBar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
   },
   toolbar: {
-    flexWrap: "wrap",
-  },
-  toolbarTitle: {
-    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
   },
   link: {
     margin: theme.spacing(1, 1.5),
   },
-  heroContent: {
-    padding: theme.spacing(8, 0, 6),
+  title: {
+    marginBottom: "2rem",
   },
   cardHeader: {
     backgroundColor:
@@ -57,15 +61,20 @@ const useStyles = makeStyles((theme) => ({
         ? theme.palette.grey[200]
         : theme.palette.grey[700],
   },
-  cardPricing: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "baseline",
-    marginBottom: theme.spacing(2),
+  config: {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    marginTop: theme.spacing(0),
+    paddingTop: theme.spacing(0),
+    paddingBottom: theme.spacing(0),
+    [theme.breakpoints.up("sm")]: {
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(6),
+    },
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   footer: {
     borderTop: `1px solid ${theme.palette.divider}`,
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(15),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
     [theme.breakpoints.up("sm")]: {
@@ -75,128 +84,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const tiers = [
-  {
-    title: "Free",
-    price: "0",
-    description: [
-      "10 users included",
-      "2 GB of storage",
-      "Help center access",
-      "Email support",
-    ],
-    buttonText: "Sign up for free",
-    buttonVariant: "outlined",
-  },
-  {
-    title: "Pro",
-    subheader: "Most popular",
-    price: "15",
-    description: [
-      "20 users included",
-      "10 GB of storage",
-      "Help center access",
-      "Priority email support",
-    ],
-    buttonText: "Get started",
-    buttonVariant: "contained",
-  },
-  {
-    title: "Enterprise",
-    price: "30",
-    description: [
-      "50 users included",
-      "30 GB of storage",
-      "Help center access",
-      "Phone & email support",
-    ],
-    buttonText: "Contact us",
-    buttonVariant: "outlined",
-  },
-];
-const footers = [
-  {
-    title: "Company",
-    description: ["Team", "History", "Contact us", "Locations"],
-  },
-  {
-    title: "Features",
-    description: [
-      "Cool stuff",
-      "Random feature",
-      "Team feature",
-      "Developer stuff",
-      "Another one",
-    ],
-  },
-  {
-    title: "Resources",
-    description: [
-      "Resource",
-      "Resource name",
-      "Another resource",
-      "Final resource",
-    ],
-  },
-  {
-    title: "Legal",
-    description: ["Privacy policy", "Terms of use"],
-  },
-];
-
 export default function Configuracion() {
   const classes = useStyles();
 
+  //Categorias disponibles
+  let fCategories = useSelector((state) => state.ui.fCategories);
+  let vCategories = useSelector((state) => state.ui.vCategories);
+  const tiers = [
+    {
+      title: "Categorías frutas",
+      description: fCategories,
+      buttonText: "Añadir",
+    },
+    {
+      title: "Categoría verduras",
+      description: vCategories,
+      buttonText: "Añadir",
+    },
+  ];
+  const configuraciones = [
+    {
+      title: "Alerta socio lleva sin venir: ",
+      description: ["1 mes", "3 meses", "6 meses"],
+    },
+  ];
+
   return (
-    <React.Fragment>
-      <Container maxWidth="sm" component="main" className={classes.heroContent}>
-        <Typography
-          component="h2"
-          variant="h2"
-          align="center"
-          color="textPrimary"
-          gutterBottom
-        >
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
+      <Container className={classes.title}>
+        <Typography variant="h6" align="center" color="textSecondary">
           BioGarden Configuraciones
-        </Typography>
-        <Typography
-          variant="h6"
-          align="center"
-          color="textSecondary"
-          component="p"
-        >
-          Configura los datos disponibles en la aplicación
         </Typography>
       </Container>
       <Container maxWidth="md" component="main">
-        <Grid container spacing={5} alignItems="flex-end">
+        <Grid container spacing={7} alignItems="flex-end">
           {tiers.map((tier) => (
-            // Enterprise card is full width at sm breakpoint
-            <Grid
-              item
-              key={tier.title}
-              xs={12}
-              sm={tier.title === "Enterprise" ? 12 : 6}
-              md={4}
-            >
+            <Grid item key={tier.title} xs={12} md={4}>
               <Card>
                 <CardHeader
                   title={tier.title}
-                  subheader={tier.subheader}
                   titleTypographyProps={{ align: "center" }}
                   subheaderTypographyProps={{ align: "center" }}
-                  action={tier.title === "Pro" ? <StarIcon /> : null}
                   className={classes.cardHeader}
                 />
                 <CardContent>
-                  <div className={classes.cardPricing}>
-                    <Typography component="h2" variant="h3" color="textPrimary">
-                      ${tier.price}
-                    </Typography>
-                    <Typography variant="h6" color="textSecondary">
-                      /mo
-                    </Typography>
-                  </div>
                   <ul>
                     {tier.description.map((line) => (
                       <Typography
@@ -211,44 +143,44 @@ export default function Configuracion() {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    fullWidth
-                    variant={tier.buttonVariant}
-                    color="primary"
-                  >
+                  <Button fullWidth variant="outlined" color="primary">
                     {tier.buttonText}
                   </Button>
                 </CardActions>
               </Card>
             </Grid>
           ))}
+          {/* Configuraciones */}
+
+          <Grid item xs={12} md={4}>
+            {configuraciones.map((config) => (
+              <div className={classes.config}>
+                <Typography variant="h6" color="textPrimary" gutterBottom>
+                  {config.title}
+                </Typography>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="gender" name="gender1" value="1 mes">
+                    {config.description.map((item) => (
+                      <FormControlLabel
+                        value={item}
+                        control={<Radio />}
+                        label={item}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            ))}
+          </Grid>
         </Grid>
       </Container>
-      {/* Footer */}
       <Container maxWidth="md" component="footer" className={classes.footer}>
-        <Grid container spacing={4} justify="space-evenly">
-          {footers.map((footer) => (
-            <Grid item xs={6} sm={3} key={footer.title}>
-              <Typography variant="h6" color="textPrimary" gutterBottom>
-                {footer.title}
-              </Typography>
-              <ul>
-                {footer.description.map((item) => (
-                  <li key={item}>
-                    <Link href="#" variant="subtitle1" color="textSecondary">
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Grid>
-          ))}
-        </Grid>
+        <Grid container spacing={4} justify="space-evenly"></Grid>
         <Box mt={5}>
           <Copyright />
         </Box>
       </Container>
       {/* End footer */}
-    </React.Fragment>
+    </main>
   );
 }

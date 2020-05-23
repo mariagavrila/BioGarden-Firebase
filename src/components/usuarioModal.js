@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { validate } from "email-validator";
 //Material UI
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
@@ -46,7 +45,7 @@ export default function SimpleModal({ type, user }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
-    if (error.serverStatus)
+    if (error.serverStatus || type === "add")
       dispatch({
         type: CLEAR_USER,
       });
@@ -103,7 +102,7 @@ export default function SimpleModal({ type, user }) {
     let target = e.target.id;
     let value = e.target.value;
 
-    if (value.length == 0) {
+    if (value.length === 0) {
       dispatch({
         type: USER_ERRORS,
         payload: {
@@ -147,7 +146,7 @@ export default function SimpleModal({ type, user }) {
 
   //Validar la fecha de nacimiento aparte por ser cogida de otro componente
   const validateBirthDate = () => {
-    if (userData.birthDate == "") {
+    if (userData.birthDate === "") {
       dispatch({
         type: USER_ERRORS,
         payload: {
@@ -168,10 +167,10 @@ export default function SimpleModal({ type, user }) {
   //Validar el formulario
   const validateForm = () => {
     if (
-      userData.name != "" &&
-      userData.lastName != "" &&
-      userData.dni != "" &&
-      userData.birthDate != ""
+      userData.name !== "" &&
+      userData.lastName !== "" &&
+      userData.dni !== "" &&
+      userData.birthDate !== ""
     )
       return true;
     else return false;
@@ -291,7 +290,7 @@ export default function SimpleModal({ type, user }) {
           style={{ width: "95%" }}
           onChange={handleSubmit}
         />
-        {type == "add" ? (
+        {type === "add" ? (
           <Button
             type="submit"
             variant="outlined"
@@ -324,7 +323,7 @@ export default function SimpleModal({ type, user }) {
 
   return (
     <div>
-      {type == "add" ? (
+      {type === "add" ? (
         <Button
           type="submit"
           variant="outlined"

@@ -119,7 +119,6 @@ export const deleteUser = (id) => (dispatch) => {
   return axios
     .post(`${proxy}/delete/${id}`)
     .then((res) => {
-      console.log(res.data.message);
       dispatch({
         type: USER_DELETED,
         payload: "Usuario eliminado correctamente.",

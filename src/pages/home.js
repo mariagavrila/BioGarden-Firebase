@@ -21,7 +21,6 @@ import WarningIcon from "@material-ui/icons/Warning";
 import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
 import CloseIcon from "@material-ui/icons/Close";
 import Checkbox from "@material-ui/core/Checkbox";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -39,19 +38,23 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     display: "flex",
-    background: "rgb(56, 28, 56)",
     marginTop: ".5rem",
     padding: "0",
+    justifyContent: "center",
+    boxShadow: "none",
   },
   details: {
     display: "flex",
+    background: "rgb(56, 28, 56)",
     flexDirection: "column",
+    minWidth: "500px",
   },
   content: {
     flex: "1 0 auto",
+    width: "100%",
   },
   cover: {
-    width: 410,
+    width: 420,
   },
   toolbar: {
     display: "flex",
@@ -89,7 +92,7 @@ export default function Home(props) {
     //hide table in firefox
     // let table = document.getElementById("filterTable");
     // if (table) {
-    //   if (table.rows.length == 0)
+    //   if (table.rows.length===0)
     //     table.parentElement.style.visibility = "hidden";
     //   else {
     //     table.parentElement.style.visibility = "visible";
@@ -203,15 +206,15 @@ export default function Home(props) {
                         />
                         <AssignmentLateIcon
                           style={{ color: "rgb(255, 164, 27)" }}
-                          className={row.estado == "2" ? "show" : "hidden"}
+                          className={row.estado === "2" ? "show" : "hidden"}
                         />
                         <WarningIcon
                           style={{ color: "rgb(255, 72, 0)" }}
-                          className={row.estado == "3" ? "show" : "hidden"}
+                          className={row.estado === "3" ? "show" : "hidden"}
                         />
                         <CloseIcon
                           style={{ color: "red" }}
-                          className={row.estado == "4" ? "show" : "hidden"}
+                          className={row.estado === "4" ? "show" : "hidden"}
                         />
                       </TableCell>
                       <TableCell align="center" className={classes.cell}>
@@ -235,7 +238,7 @@ export default function Home(props) {
         </TableContainer>
         {users.length === 0 && search === true && isLoading === false ? (
           <div className="noUser">
-            {alert != ""
+            {alert !== ""
               ? alert
               : "No hay resultados que coincidan con la busqueda."}
           </div>

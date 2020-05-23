@@ -210,7 +210,7 @@ export default function Socios(props) {
                 Eliminar
               </TableCell>
               <TableCell align="center" className={classes.header}>
-                Acceder
+                Historial
               </TableCell>
             </TableRow>
           </TableHead>
@@ -262,10 +262,10 @@ export default function Socios(props) {
                           size="small"
                           style={{ color: "white" }}
                           onClick={(e) =>
-                            history.push(`/usuario?id=${row.nsocio}`)
+                            history.push(`/usuario?id=${row.userId}`)
                           }
                         >
-                          Acceder
+                          Historial
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -283,7 +283,7 @@ export default function Socios(props) {
                     25,
                     { label: "Todos", value: -1 },
                   ]}
-                  colSpan={3}
+                  colSpan={6}
                   count={users.length}
                   rowsPerPage={rowsPerPage}
                   page={page}

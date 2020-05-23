@@ -73,8 +73,8 @@ export default function Checkout() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [error, setError] = React.useState({
+  const [activeStep, setActiveStep] = useState(0);
+  const [error, setError] = useState({
     cart: "",
     socio: "",
   });

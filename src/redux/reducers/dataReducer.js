@@ -31,7 +31,7 @@ const initialState = {
   failAdd: false,
   isDeleting: false,
   msgDelete: "",
-  failDelete: false,
+  deleted: false,
   checkProducts: [],
   isRegistering: false,
   checkoutRegistered: "",
@@ -83,14 +83,14 @@ export default function (state = initialState, action) {
     case DELETING_PRODUCT:
       return {
         ...state,
-        failDelete: false,
+        deleted: false,
         isDeleting: true,
       };
     case PRODUCT_DELETED:
       return {
         ...state,
         isDeleting: false,
-        failDelete: false,
+        deleted: true,
         msgDelete: action.payload,
       };
     case FAIL_PRODUCTS:
@@ -98,11 +98,14 @@ export default function (state = initialState, action) {
         ...state,
         isDeleting: false,
         msgDelete: action.payload,
-        failDelete: true,
+        deleted: false,
       };
     case CLEAR_PRODUCT:
       return {
         ...state,
+        msgAdd: "",
+        deleted: false,
+        msgDelete: "",
         msgAdd: "",
       };
     case FILL_CHECK_PRODUCTS:

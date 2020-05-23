@@ -15,8 +15,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import SettingsIcon from "@material-ui/icons/Settings";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 import GroupIcon from "@material-ui/icons/Group";
-import FastfoodIcon from "@material-ui/icons/Fastfood";
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 //Redux
 import { useSelector } from "react-redux";

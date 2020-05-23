@@ -25,6 +25,6 @@ h6 {
 #login {
   height: 100vh;
   background: url("../../images/orange.jpg");
-  background-size: cover cover;
+  background-size: cover;
   background-repeat: no-repeat;
 }

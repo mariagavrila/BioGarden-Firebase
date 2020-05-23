@@ -1,9 +1,3 @@
-#home {
-  height: 100vh;
-  background: url("../../images/uvas.jpg");
-  background-size: cover cover;
-  background-repeat: no-repeat;
-}
 #img {
   width: 100%;
   height: auto;
@@ -12,6 +6,7 @@
 }
 b {
   background: rgb(56, 28, 56);
+  background: rgba(207, 124, 207, 0.253);
 }
 #tablePrincipal {
   width: 100%;

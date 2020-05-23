@@ -13,11 +13,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 //Redux
 import { getUserData } from "../redux/actions/userActions";
 import { getRegisters } from "../redux/actions/dataActions";
@@ -52,48 +51,22 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "right",
     height: "26vh",
     padding: ".5rem",
+    position: "relative",
+  },
+  close: {
+    position: "absolute",
+    color: "red",
+    right: 0,
+    top: 0,
   },
 }));
-
-function createData(fecha, comentario) {
-  return { fecha, comentario };
-}
-
-const rows = [
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-  createData(
-    "15-03-2020 13:53:51",
-    "Ha retirado de la genetica cahalote un total de 4 g"
-  ),
-];
 
 export default function Usuario(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   let id = props.location.search.split("=")[1];
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getUserData(id));
@@ -107,6 +80,18 @@ export default function Usuario(props) {
   const loadingRegisters = useSelector((state) => state.data.loadingRegisters);
   const registers = useSelector((state) => state.data.setRegisters);
   const failRegisters = useSelector((state) => state.data.failRegisters);
+
+  //Calcular la media de compras del socio
+  let total = 0;
+  let fruta = 0;
+  let verdura = 0;
+  registers.forEach((e) => {
+    total += e.total;
+    if (e.section === "Fruta") fruta += e.total;
+    if (e.section === "Verdura") verdura += e.total;
+  });
+
+  //Establecer el estado del socio
 
   return (
     <main className={classes.content}>
@@ -136,18 +121,9 @@ export default function Usuario(props) {
               <Paper className={classes.paper}>
                 <Grid container spacing={1}>
                   <Grid item xs={8}>
-                    <p className="grConsum">0gr consumidos / 15.00gr dia</p>
-                    <p className="grConsum">0gr consumidos / 15.00gr dia</p>
-                    <Button variant="outlined" className="buttonCart">
-                      <AccountBalanceWalletIcon
-                        color="primary"
-                        fontSize="large"
-                      />
-                      <p className="insideButton">
-                        Saldo <br />
-                        0Crd
-                      </p>
-                    </Button>
+                    <p className="grConsum">Compra frutas: {fruta}€</p>
+                    <p className="grConsum">Compra verduras: {verdura}€</p>
+                    <p className="grConsum">Total: {total}€</p>
                   </Grid>
                   <Grid item xs={4}>
                     <img
@@ -163,23 +139,28 @@ export default function Usuario(props) {
                 Este socio tiene su tarjeta caducada desde el 12/02/2020
               </Paper>
             </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.observation} elevation={3}>
-                <TextField
-                  id="observation"
-                  label="Comentario"
-                  variant="outlined"
-                  multiline
-                  rows={3}
-                  fullWidth
-                  style={{ margin: ".5rem 0 .5rem .5rem", width: "98%" }}
-                  defaultValue="Comentario..."
-                />
-                <Button variant="contained" color="primary">
-                  Publicar
-                </Button>
-              </Paper>
-            </Grid>
+            {open ? (
+              <Grid item xs={12}>
+                <Paper className={classes.observation} elevation={3}>
+                  <IconButton onClick={(e) => setOpen(false)}>
+                    <CloseIcon className={classes.close} size="small" />
+                  </IconButton>
+                  <TextField
+                    id="observation"
+                    label="Comentario"
+                    variant="outlined"
+                    multiline
+                    rows={3}
+                    fullWidth
+                    style={{ margin: "-.1rem 0 .5rem .5rem", width: "98%" }}
+                    defaultValue="Comentario..."
+                  />
+                  <Button variant="contained" color="primary">
+                    Publicar
+                  </Button>
+                </Paper>
+              </Grid>
+            ) : null}
           </Grid>
           <TableContainer
             component={Paper}
@@ -206,6 +187,7 @@ export default function Usuario(props) {
                       variant="contained"
                       color="light"
                       className="floatRight"
+                      onClick={(e) => setOpen(true)}
                     >
                       Publicar Comentario
                     </Button>
@@ -220,9 +202,7 @@ export default function Usuario(props) {
                         <TableCell align="right">{row.section}</TableCell>
                         <TableCell align="right">{row.name}</TableCell>
                         <TableCell align="right">{`${row.stock} ${row.unit}`}</TableCell>
-                        <TableCell align="right">
-                          <CloseIcon style={{ color: "red" }} />
-                        </TableCell>
+                        <TableCell align="right">{row.total} €</TableCell>
                       </TableRow>
                     ))
                   : null}

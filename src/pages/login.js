@@ -11,7 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../redux/actions/userActions";
-import { SET_AUTHENTICATED, CLEAR_ERRORS } from "../redux/types";
+import { CLEAR_ERRORS } from "../redux/types";
 
 import "./styles/login.css";
 
@@ -113,8 +113,8 @@ export default function Login(props) {
   const authenticated = useSelector((state) => state.user.authenticated);
   const loginError = useSelector((state) => state.user.error);
   const isLoading = useSelector((state) => state.user.loading);
-  if (state.email != "") state.emailError = "";
-  if (state.password != "") state.passwordError = "";
+  if (state.email !== "") state.emailError = "";
+  if (state.password !== "") state.passwordError = "";
 
   return (
     <main className={classes.content} id="login">

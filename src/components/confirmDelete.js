@@ -11,7 +11,8 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 //Redux
 import { useSelector, useDispatch } from "react-redux";
 import { deleteUser } from "../redux/actions/userActions";
-import { CLEAR_USER } from "../redux/types";
+import { deleteProduct } from "../redux/actions/dataActions";
+import { CLEAR_USER, CLEAR_PRODUCT } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,14 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DeleteModal({ id }) {
+export default function DeleteModal({ id, target }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-
   const handleOpen = () => {
     dispatch({
       type: CLEAR_USER,
+    });
+    dispatch({
+      type: CLEAR_PRODUCT,
     });
     setOpen(true);
   };
@@ -50,16 +53,20 @@ export default function DeleteModal({ id }) {
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
-    console.log(id);
-
-    dispatch(deleteUser(id));
+    if (target === "producto") dispatch(deleteProduct(id));
+    else dispatch(deleteUser(id));
   };
-  //Obtener la respuesta desde la tienda de redux
+  //Obtener la respuesta desde la tienda de redux para el usuario
   const deleting = useSelector((state) => state.user.deleting);
   const deleted = useSelector((state) => state.user.deleted);
   const resDelete = useSelector((state) => state.user.resDelete);
+  //Obtener la respuesta desde la tienda de redux para el producto
+  const deletingProduct = useSelector((state) => state.data.isDeleting);
+  const productDeleted = useSelector((state) => state.data.deleted);
+  const msgDelete = useSelector((state) => state.data.msgDelete);
+
   useEffect(() => {
-    if (deleted) {
+    if (deleted || productDeleted) {
       setTimeout(() => {
         setOpen(false);
       }, 2000);
@@ -80,10 +87,13 @@ export default function DeleteModal({ id }) {
           Cancelar
         </Button>
       </div>
-      {deleting ? (
+      {deleting || deletingProduct ? (
         <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />
       ) : null}
       <div className={deleted ? "validForm" : "invalidForm"}>{resDelete}</div>
+      <div className={productDeleted ? "validForm" : "invalidForm"}>
+        {msgDelete}
+      </div>
     </div>
   );
 
