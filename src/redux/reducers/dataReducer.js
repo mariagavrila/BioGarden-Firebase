@@ -106,7 +106,6 @@ export default function (state = initialState, action) {
         msgAdd: "",
         deleted: false,
         msgDelete: "",
-        msgAdd: "",
       };
     case FILL_CHECK_PRODUCTS:
       state.checkProducts.push(action.payload);

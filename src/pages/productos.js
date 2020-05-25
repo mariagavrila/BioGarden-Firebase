@@ -41,7 +41,7 @@ import {
   getProducts,
   updateProduct,
 } from "../redux/actions/dataActions";
-import { CLEAR_PRODUCT } from "../redux/types";
+import { SET_PRODUCTS } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,24 +108,22 @@ export default function Productos(props) {
     name: false,
     price: false,
   });
-  console.log(error);
   const [msg, setMsg] = useState({
     category: "¡Selecciona una categoría!",
     name: "Nombre invalido",
     price: "Precio invalido",
   });
   const [edit, setEdit] = useState(false);
-
-  let products = [];
+  const [filter, setFilter] = useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   useEffect(() => {
     dispatch(getProducts());
   }, []);
+
   //Guardar los datos cambiados en los inputs
   function handleChange(e) {
-    console.log("llamando handle change");
     let id = e.target.id;
     let value = e.target.value;
     //Transformar en formato correcto el nombre del producto
@@ -173,52 +171,38 @@ export default function Productos(props) {
     if (e.target.value <= 0) setError({ ...error, price: true });
     else setError({ ...error, price: false });
   };
-  //Validar los campos del producto
-  const validateProduct = () => {
-    //Validar en nombre
-    if (newProduct.name === "") {
-      setError({ ...error, name: true });
-    } else setError({ ...error, name: false });
 
-    //Validar el precio
-    if (newProduct.price === "") {
-      console.log("validar precio");
-
-      setError({ ...error, price: true });
-    } else setError({ ...error, price: false });
-
-    //Validar la categoria
-    if (newProduct.category === "") setError({ ...error, category: true });
-    else setError({ ...error, category: false });
-  };
   //Añadir el producto a la bbdd
   const addProduct = (e) => {
     if (e) e.preventDefault();
-    validateProduct();
-    //Comporbar que no hay ningun error
-    if (
-      newProduct.name === "" ||
-      newProduct.price === "" ||
-      newProduct.category === ""
-    )
+    //Validar la categoria
+    if (!newProduct.category) {
+      setError({ ...error, category: true });
       return;
-    else {
-      if (!edit) dispatch(addNewProduct(newProduct));
-      else dispatch(updateProduct(newProduct.id, newProduct));
-
-      setNewProduct({
-        section: "Fruta",
-        category: "",
-        name: "",
-        price: "",
-        stock: "",
-        unit: "Kg",
-      });
-      setEdit(false);
-      setTimeout(() => {
-        dispatch({ type: CLEAR_PRODUCT });
-      }, 3000);
     }
+    //Validar el nombre
+    if (newProduct.name === "") {
+      setError({ ...error, name: true });
+      return;
+    }
+    //Validar el precio
+    if (newProduct.price === "") {
+      setError({ ...error, price: true });
+      return;
+    }
+
+    if (!edit) dispatch(addNewProduct(newProduct));
+    else dispatch(updateProduct(newProduct.id, newProduct));
+
+    setNewProduct({
+      section: "Fruta",
+      category: "",
+      name: "",
+      price: "",
+      stock: "",
+      unit: "Kg",
+    });
+    setEdit(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -230,7 +214,7 @@ export default function Productos(props) {
   };
 
   //Estado obtener productos
-  products = useSelector((state) => state.data.products);
+  const products = useSelector((state) => state.data.products);
   const isLoading = useSelector((state) => state.data.isLoading);
   const errorGetUser = useSelector((state) => state.data.error);
   //Estado añadir producto
@@ -274,7 +258,24 @@ export default function Productos(props) {
     });
     setEdit(false);
   };
-  const handleSearch = (text) => {};
+  //Filtrar los productos
+  const handleSearch = (text) => {
+    // console.log(text);
+    // let filterProd = [];
+    // products.forEach((p) => {
+    //   if (
+    //     includes(p.name, text) ||
+    //     includes(p.section, text) ||
+    //     includes(p.category, text)
+    //   )
+    //     filterProd.push(p);
+    // });
+  };
+  const includes = (txtp, txt) => {
+    let a = txtp.trim().toLowerCase();
+    let b = txt.trim().toLowerCase();
+    return a.includes(b);
+  };
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />

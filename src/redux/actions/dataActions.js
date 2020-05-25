@@ -14,6 +14,7 @@ import {
   LOADING_REGISTERS,
   SET_REGISTERS,
   FAIL_REGISTERS,
+  CLEAR_PRODUCT,
 } from "../types";
 import axios from "axios";
 
@@ -44,7 +45,10 @@ export const addNewProduct = (data) => (dispatch) => {
     .post(`${proxy}/mercado`, data)
     .then((res) => {
       dispatch({ type: PRODUCT_ADDED, payload: res.data.msg });
-      dispatch(getProducts());
+      setTimeout(() => {
+        dispatch(getProducts());
+        dispatch({ type: CLEAR_PRODUCT });
+      }, 2000);
     })
     .catch(() => {
       dispatch({
@@ -62,6 +66,7 @@ export const updateProduct = (id, data) => (dispatch) => {
       dispatch({ type: PRODUCT_ADDED, payload: res.data.msg });
       setTimeout(() => {
         dispatch(getProducts());
+        dispatch({ type: CLEAR_PRODUCT });
       }, 2000);
     })
     .catch((err) => {

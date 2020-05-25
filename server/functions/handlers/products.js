@@ -29,11 +29,11 @@ exports.postOneProduct = (req, res) => {
     .get()
     .then((doc) => {
       let docs = 0;
-      doc.forEach(() => {
+      let d = new Date();
+      doc.forEach((e) => {
         docs++;
       });
       if (docs === 0) {
-        let d = new Date();
         //Se crea un nuevo producto
         const newProduct = {
           ...req.body,
@@ -54,27 +54,7 @@ exports.postOneProduct = (req, res) => {
         });
     });
 };
-
-exports.deleteProduct = (req, res) => {
-  const document = db.doc(`/mercado/${req.params.productId}`);
-  document
-    .get()
-    .then((doc) => {
-      if (!doc.exists) {
-        return res.status(404).json({ error: "Producto no encontrado" });
-      } else {
-        return document.delete();
-      }
-    })
-    .then(() => {
-      res.json({ message: "Producto eliminado correctamente." });
-    })
-    .catch(() => {
-      return res
-        .status(500)
-        .json({ error: "Error interno. ¡Inténtelo más tarde!" });
-    });
-};
+//Actualizar un producto
 exports.updateProduct = (req, res) => {
   const document = db.doc(`/mercado/${req.params.productId}`);
 
@@ -103,6 +83,28 @@ exports.updateProduct = (req, res) => {
         .json({ error: "Error en el servidor.Inténtelo más tarde." });
     });
 };
+//Borrar un producto
+exports.deleteProduct = (req, res) => {
+  const document = db.doc(`/mercado/${req.params.productId}`);
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      } else {
+        return document.delete();
+      }
+    })
+    .then(() => {
+      res.json({ message: "Producto eliminado correctamente." });
+    })
+    .catch(() => {
+      return res
+        .status(500)
+        .json({ error: "Error interno. ¡Inténtelo más tarde!" });
+    });
+};
+
 //Registrar una compra
 exports.checkout = (req, res) => {
   var batch = db.batch();

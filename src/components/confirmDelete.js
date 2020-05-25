@@ -71,7 +71,7 @@ export default function DeleteModal({ id, target }) {
         setOpen(false);
       }, 2000);
     }
-  });
+  }, []);
 
   //El cuerpo del modal
   const body = (
