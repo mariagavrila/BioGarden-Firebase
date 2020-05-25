@@ -41,7 +41,6 @@ import {
   getProducts,
   updateProduct,
 } from "../redux/actions/dataActions";
-import { SET_PRODUCTS } from "../redux/types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -260,22 +259,22 @@ export default function Productos(props) {
   };
   //Filtrar los productos
   const handleSearch = (text) => {
-    // console.log(text);
-    // let filterProd = [];
-    // products.forEach((p) => {
-    //   if (
-    //     includes(p.name, text) ||
-    //     includes(p.section, text) ||
-    //     includes(p.category, text)
-    //   )
-    //     filterProd.push(p);
-    // });
+    setFilter(text);
   };
   const includes = (txtp, txt) => {
     let a = txtp.trim().toLowerCase();
     let b = txt.trim().toLowerCase();
     return a.includes(b);
   };
+  let productsTable = products.filter((p) => {
+    if (
+      includes(p.name, filter) ||
+      includes(p.section, filter) ||
+      includes(p.category, filter)
+    )
+      return p;
+  });
+
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
@@ -483,8 +482,8 @@ export default function Productos(props) {
             </TableRow>
           </TableHead>
           <TableBody style={{ background: "rgba(143, 115, 49, 0.253)" }}>
-            {products.length > 0
-              ? products
+            {productsTable.length > 0
+              ? productsTable
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <TableRow key={row.id}>

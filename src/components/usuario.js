@@ -81,6 +81,12 @@ export default function Usuario(props) {
   const registers = useSelector((state) => state.data.setRegisters);
   const failRegisters = useSelector((state) => state.data.failRegisters);
 
+  // let cssState = "";
+  // if (data.endInscriptionDate) {
+  //   let today = new Date();
+  //   if (today < dateHelper(data.endInscriptionDate)) cssState = "expired";
+  // }
+
   //Calcular la media de compras del socio
   let total = 0;
   let fruta = 0;
@@ -214,3 +220,9 @@ export default function Usuario(props) {
     </main>
   );
 }
+// const dateHelper = (date) => {
+//   let arr = date.split("/");
+//   let day = arr[0] < 10 ? `0${arr[0]}` : arr[0];
+//   let month = arr[1] < 10 ? `0${arr[1]}` : arr[1];
+//   return new Date(`${arr[2]}-${month}-${day}`);
+// };

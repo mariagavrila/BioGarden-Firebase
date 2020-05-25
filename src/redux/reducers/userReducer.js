@@ -175,6 +175,7 @@ export default function (state = initialState, action) {
         failData: action.payload,
       };
     case ADD_USER:
+      console.log(action.payload);
       return {
         ...state,
         userData: {

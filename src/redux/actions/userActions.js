@@ -91,7 +91,7 @@ export const addUser = (data, user) => (dispatch) => {
   let url;
   if (user) url = `${proxy}/update/${user}`;
   else url = `${proxy}/user`;
-  console.log(url);
+  console.log(data);
   return axios
     .post(url, data)
     .then((res) => {

@@ -117,9 +117,6 @@ export default function Socios(props) {
   const isLoading = useSelector((state) => state.user.loadingUsers);
   const users = useSelector((state) => state.user.users);
   const alert = useSelector((state) => state.user.error);
-  const editSocio = (id) => {
-    console.log(id);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
