@@ -163,6 +163,7 @@ export default function (state = initialState, action) {
         dataLoading: true,
       };
     case DATA_LOADED:
+      console.log("dataloaded");
       return {
         ...state,
         dataLoading: false,
@@ -175,7 +176,7 @@ export default function (state = initialState, action) {
         failData: action.payload,
       };
     case ADD_USER:
-      console.log(action.payload);
+      console.log("adduser");
       return {
         ...state,
         userData: {
@@ -184,6 +185,7 @@ export default function (state = initialState, action) {
         },
       };
     case CLEAR_USER:
+      console.log("clearuser");
       return {
         ...state,
         userData: {

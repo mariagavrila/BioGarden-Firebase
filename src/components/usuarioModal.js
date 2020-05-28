@@ -90,7 +90,7 @@ export default function SimpleModal({ type, user }) {
   const dataLoading = useSelector((state) => state.user.dataLoading);
   const userData = useSelector((state) => state.user.userData);
   const failData = useSelector((state) => state.user.failData);
-  // console.log(userData);
+  //console.log(userData);
   // console.log(error);
 
   useEffect(() => {
@@ -152,6 +152,7 @@ export default function SimpleModal({ type, user }) {
   const validateBirthDate = () => {
     console.log(userData.birthDate);
     if (userData.birthDate === "") {
+      console.log("dispatch error birthnpm ");
       dispatch({
         type: USER_ERRORS,
         payload: {
