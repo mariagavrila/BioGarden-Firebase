@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   cover: {
-    width: 420,
+    width: 500,
   },
   toolbar: {
     display: "flex",

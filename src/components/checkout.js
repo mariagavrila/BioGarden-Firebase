@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(0),
     marginRight: theme.spacing(0),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 750,
+      width: 900,
       marginLeft: "0",
     },
   },

@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7b05c516.chunk.css",
+    "main.js": "/static/js/main.ebf2c881.chunk.js",
+    "main.js.map": "/static/js/main.ebf2c881.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.78896cb5.js",
+    "runtime-main.js.map": "/static/js/runtime-main.78896cb5.js.map",
+    "static/js/2.daaaa984.chunk.js": "/static/js/2.daaaa984.chunk.js",
+    "static/js/2.daaaa984.chunk.js.map": "/static/js/2.daaaa984.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.fa309721458b1a80175f733b4bea8574.js": "/precache-manifest.fa309721458b1a80175f733b4bea8574.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.7b05c516.chunk.css.map": "/static/css/main.7b05c516.chunk.css.map",
+    "static/js/2.daaaa984.chunk.js.LICENSE.txt": "/static/js/2.daaaa984.chunk.js.LICENSE.txt",
+    "static/media/login.css": "/static/media/orange.f4b8a6ca.jpg",
+    "static/media/redfruits.jpg": "/static/media/redfruits.f085e48d.jpg",
+    "static/media/scales.png": "/static/media/scales.75dd298b.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.78896cb5.js",
+    "static/js/2.daaaa984.chunk.js",
+    "static/css/main.7b05c516.chunk.css",
+    "static/js/main.ebf2c881.chunk.js"
+  ]
+}

@@ -45,7 +45,7 @@ export default function SimpleModal({ type, user }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
-    if (error.serverStatus || type === "add")
+    if (error.serverStatus)
       dispatch({
         type: CLEAR_USER,
       });
@@ -100,6 +100,13 @@ export default function SimpleModal({ type, user }) {
       }, 2000);
     }
   });
+  useEffect(() => {
+    if (type === "add") {
+      dispatch({
+        type: CLEAR_USER,
+      });
+    }
+  }, []);
 
   //Validación básica antes de mandar los datos al servidor
   const validate = (e, minLength, msg, requiredMsg) => {
