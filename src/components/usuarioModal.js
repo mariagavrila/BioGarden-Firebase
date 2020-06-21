@@ -156,7 +156,6 @@ export default function SimpleModal({ type, user }) {
   //Validar la fecha de nacimiento aparte por ser cogida de otro componente
   const validateBirthDate = () => {
     if (userData.birthDate === "") {
-      console.log("dispatch error birthnpm ");
       dispatch({
         type: USER_ERRORS,
         payload: {
