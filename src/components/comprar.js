@@ -83,7 +83,7 @@ export default function BuyForm() {
     setState({
       ...state,
       [name]: value,
-      total: value * state.price,
+      total: (value * state.price).toFixed(2),
     });
     setError({
       stock: "",

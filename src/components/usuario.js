@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
   observation: {
     padding: theme.spacing(0),
     textAlign: "right",
-    height: "26vh",
-    padding: ".5rem",
+    height: "25vh",
+    padding: "1rem 4rem .5rem 0",
     position: "relative",
   },
   close: {
@@ -88,13 +88,13 @@ export default function Usuario(props) {
   // }
 
   //Calcular la media de compras del socio
-  let total = 0;
-  let fruta = 0;
-  let verdura = 0;
+  let total = Number((0).toFixed(2));
+  let fruta = Number((0).toFixed(2));
+  let verdura = Number((0).toFixed(2));
   registers.forEach((e) => {
-    total += e.total;
-    if (e.section === "Fruta") fruta += e.total;
-    if (e.section === "Verdura") verdura += e.total;
+    total += Number(e.total);
+    if (e.section === "Fruta") fruta += Number(e.total);
+    if (e.section === "Verdura") verdura += Number(e.total);
   });
 
   //Establecer el estado del socio
@@ -148,8 +148,11 @@ export default function Usuario(props) {
             {open ? (
               <Grid item xs={12}>
                 <Paper className={classes.observation} elevation={3}>
-                  <IconButton onClick={(e) => setOpen(false)}>
-                    <CloseIcon className={classes.close} size="small" />
+                  <IconButton
+                    onClick={(e) => setOpen(false)}
+                    className={classes.close}
+                  >
+                    <CloseIcon size="small" />
                   </IconButton>
                   <TextField
                     id="observation"
@@ -158,7 +161,11 @@ export default function Usuario(props) {
                     multiline
                     rows={3}
                     fullWidth
-                    style={{ margin: "-.1rem 0 .5rem .5rem", width: "98%" }}
+                    style={{
+                      margin: "0 0 -1rem .5rem",
+                      width: "98%",
+                      height: "80%",
+                    }}
                     defaultValue="Comentario..."
                   />
                   <Button variant="contained" color="primary">

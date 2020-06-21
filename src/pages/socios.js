@@ -129,21 +129,28 @@ export default function Socios(props) {
   return (
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <form
-        className={classes.root}
-        noValidate
-        autoComplete="off"
-        onSubmit={getUsers}
-        id="filterForm"
-      >
-        <TextField id="nombre" onChange={handleChange} label="Nombre" />
-        <TextField id="apellido" onChange={handleChange} label="Apellido" />
-        <TextField id="dni" onChange={handleChange} label="DNI" />
-        <TextField id="nsocio" onChange={handleChange} label="N° Socio" />
-        <Button type="submit" variant="outlined" color="primary" value="Submit">
-          Buscar
-        </Button>
-      </form>
+      <div className="">
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={getUsers}
+          id="filterForm"
+        >
+          <TextField id="nombre" onChange={handleChange} label="Nombre" />
+          <TextField id="apellido" onChange={handleChange} label="Apellido" />
+          <TextField id="dni" onChange={handleChange} label="DNI" />
+          <TextField id="nsocio" onChange={handleChange} label="N° Socio" />
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            value="Submit"
+          >
+            Buscar
+          </Button>
+        </form>
+      </div>
 
       {isLoading ? (
         <LinearProgress color="primary" style={{ marginBottom: "1rem" }} />

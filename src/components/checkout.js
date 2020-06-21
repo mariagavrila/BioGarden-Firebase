@@ -89,11 +89,10 @@ export default function Checkout() {
   const failRegister = useSelector((state) => state.data.failCheckout);
 
   useEffect(() => {
-    console.log("useeffect");
     if (!failRegister && registerMsg !== "")
       setTimeout(() => {
         dispatch({ type: CLEAR_CHECKOUT });
-        setActiveStep(1);
+        setActiveStep(0);
       }, 3000);
   });
 
@@ -116,7 +115,6 @@ export default function Checkout() {
           id: user.userId,
         });
       });
-      console.log(data);
       dispatch(checkout(data));
     } else {
       setActiveStep(activeStep + 1);

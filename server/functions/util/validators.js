@@ -71,7 +71,7 @@ function isValidEmail(email) {
 }
 
 function isValidName(name) {
-  var re = /^[a-zA-Z '.-]*$/;
+  var re = /^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+[\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])?$/;
   let n = name.trim().toLowerCase();
   if (n.length < 3 || name.length > 50 || !re.test(n)) {
     return false;

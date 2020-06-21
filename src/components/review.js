@@ -6,8 +6,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Grid from "@material-ui/core/Grid";
 //Redux
-import { useSelector, useDispatch } from "react-redux";
-import { FILL_CHECK_PRODUCTS } from "../redux/types";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -27,7 +26,7 @@ export default function Review() {
   const user = useSelector((state) => state.user.userSelected);
 
   const products = [];
-  let total = 0;
+  let total = Number((0).toFixed(2));
   const cart = useSelector((state) => state.data.checkProducts);
   cart.forEach((p) => {
     let product = {
@@ -35,7 +34,7 @@ export default function Review() {
       desc: `${p.stock} ${p.unit}`,
       price: `${p.total} €`,
     };
-    total += p.total;
+    total += Number(p.total);
     products.push(product);
   });
 

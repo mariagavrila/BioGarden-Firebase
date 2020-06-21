@@ -75,9 +75,7 @@ export default function SimpleModal({ type, user }) {
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     if (!validateBirthDate()) return;
-    console.log("handlesubmit1");
     if (!validateForm()) return;
-    console.log("handlesubmit2");
     dispatch(addUser(userData, user));
   };
   //Obtener las datos de redux para añadir usuario
@@ -157,7 +155,6 @@ export default function SimpleModal({ type, user }) {
 
   //Validar la fecha de nacimiento aparte por ser cogida de otro componente
   const validateBirthDate = () => {
-    console.log(userData.birthDate);
     if (userData.birthDate === "") {
       console.log("dispatch error birthnpm ");
       dispatch({
@@ -179,7 +176,6 @@ export default function SimpleModal({ type, user }) {
 
   //Validar el formulario
   const validateForm = () => {
-    console.log(userData);
     if (
       userData.name !== "" &&
       userData.lastName !== "" &&
